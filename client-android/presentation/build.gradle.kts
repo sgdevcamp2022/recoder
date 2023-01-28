@@ -38,15 +38,8 @@ android {
 
 dependencies {
     implementation(project(":domain"))
-    implementation("com.google.android.material:material:1.4.+")
-    implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.4.1")
-    implementation("androidx.navigation:navigation-ui-ktx:2.4.1")
-    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
-
     implementation(Libraries.VIEW_LIBRARIES)
     kapt(Kapt.VIEW_LIBRARIES)
-    debugImplementation(DebugImpl.VIEW_LIBRARIES)
     androidTestImplementation(AndroidTestImpl.VIEW_LIBRARIES)
+//    debugImplementation(DebugImpl.VIEW_LIBRARIES)
 }
