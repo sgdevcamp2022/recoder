@@ -10,6 +10,8 @@ object Versions {
 	const val FRAGMENT_KTX = "1.5.4"
 	const val COROUTINE = "1.6.4"
 
+	const val NAV = "2.5.3"
+
 	const val ROOM = "2.4.3"
 	const val PAGING_KTX = "3.1.1"
 
@@ -78,6 +80,14 @@ object Libraries {
 
 	private const val COROUTINE_CORE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.COROUTINE}"
 	private const val COROUTINE_ANDROID = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.COROUTINE}"
+
+	// navigation
+	private const val NAVIGATION_FRAGMENT = "androidx.navigation:navigation-fragment:${Versions.NAV}"
+	private const val NAVIGATION_UI = "androidx.navigation:navigation-ui:${Versions.NAV}"
+	private const val NAVIGATION_FRAGMENT_KTX = "androidx.navigation:navigation-fragment-ktx:${Versions.NAV}"
+	private const val NAVIGATION_UI_KTX = "androidx.navigation:navigation-ui-ktx:${Versions.NAV}"
+	private const val NAVIGATION_FRAGMENT_FEATURES = "androidx.navigation:navigation-dynamic-features-fragment:${Versions.NAV}"
+//	private const val NAVIGATION_FRAGMENT_COMPOSE = "androidx.navigation:navigation-compose:${Versions.NAV}"
 
 	private const val ROOM_RUNTIME = "androidx.room:room-runtime:${Versions.ROOM}"
 	private const val ROOM_KTX = "androidx.room:room-ktx:${Versions.ROOM}"
@@ -169,6 +179,16 @@ object Libraries {
 //		LOTTIE,
 		WORK_MANAGER,
 		JSON,
+		NAVIGATION_FRAGMENT,
+//		NAVIGATION_FRAGMENT_COMPOSE,
+		NAVIGATION_FRAGMENT_FEATURES,
+		NAVIGATION_FRAGMENT_KTX,
+		NAVIGATION_UI,
+		NAVIGATION_UI_KTX,
+
+//		COMPOSE_MATERIAL,
+//		COMPOSE_PREVIEW,
+//		COMPOSE_ACTIVITIES,
 	)
 	val DATA_LIBRARIES = arrayListOf(
 		ROOM_RUNTIME,
@@ -252,11 +272,13 @@ object AndroidTestImpl {
 	private const val MOCKITO_CORE = "org.mockito:mockito-core:${Versions.MOCK_TEST}"
 	private const val MOCKITO_ANDROID = "org.mockito:mockito-android:${Versions.MOCK_TEST}"
 	private const val WORK_MANAGER = "androidx.work:work-testing:${Versions.WORK_MANAGER}"
+	private const val NAVIGATION_FRAGMENT_TESTING = "androidx.navigation:navigation-navigation-testing:${Versions.NAV}"
 
 	val VIEW_LIBRARIES = arrayListOf(
 		ANDROID_JUNIT,
 		ESPRESSO,
-		WORK_MANAGER
+		WORK_MANAGER,
+		NAVIGATION_FRAGMENT_TESTING,
 	)
 
 	val DATA_LIBRARIES = arrayListOf(
