@@ -39,6 +39,9 @@ android {
 dependencies {
     implementation(project(":domain"))
     implementation(Libraries.VIEW_LIBRARIES)
+    implementation("androidx.appcompat:appcompat:1.6.0")
+    implementation("com.google.android.material:material:1.4.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     kapt(Kapt.VIEW_LIBRARIES)
     androidTestImplementation(AndroidTestImpl.VIEW_LIBRARIES)
 //    debugImplementation(DebugImpl.VIEW_LIBRARIES)
