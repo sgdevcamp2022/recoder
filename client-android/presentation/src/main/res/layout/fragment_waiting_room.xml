@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".ui.waiting.WaitingRoomActivity">
+    tools:context=".ui.waiting.WaitingRoomFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -202,7 +202,7 @@
                     android:src="@drawable/outline_share_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/meeting_link_label"/>
+                    app:layout_constraintTop_toTopOf="@id/meeting_link_label" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
