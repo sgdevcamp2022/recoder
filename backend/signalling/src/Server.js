@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import compression from 'compression';
 import { createServer } from 'httpolyglot';
-import { version, createWorker } from 'mediasoup';
+import { version } from 'mediasoup';
 import { version as _version } from 'mediasoup-client';
 import { get } from 'http';
 import {
@@ -107,7 +107,7 @@ function startServer() {
   app.use(express.static(dir.public));
   app.use(express.urlencoded({ extended: true }));
   app.use(apiBasePath + '/docs', serve, setup(swaggerDocument)); // api docs
-  app.use('/api', router);
+  app.use('/', router);
 
   httpServer.listen(listenPort, () => {
     log.log(logo, 'font-family:monospace');
@@ -179,70 +179,6 @@ function startServer() {
       roomList.get(socket.room_id).broadCast(socket.id, 'cmd', data);
     });
 
-    // room 기능
-    socket.on('roomAction', (data) => {
-      if (!roomList.has(socket.room_id)) return;
-
-      log.debug('Room action:', data);
-      switch (data.action) {
-        case 'lock':
-          if (!roomList.get(socket.room_id).isLocked()) {
-            roomList.get(socket.room_id).setLocked(true, data.password);
-            roomList.get(socket.room_id).broadCast(socket.id, 'roomAction', data.action);
-          }
-          break;
-        case 'checkPassword':
-          let roomData = {
-            room: null,
-            password: 'KO'
-          };
-          if (data.password == roomList.get(socket.room_id).getPassword()) {
-            roomData.room = roomList.get(socket.room_id).toJson();
-            roomData.password = 'OK';
-          }
-          roomList.get(socket.room_id).sendTo(socket.id, 'roomPassword', roomData);
-          break;
-        case 'unlock':
-          roomList.get(socket.room_id).setLocked(false);
-          roomList.get(socket.room_id).broadCast(socket.id, 'roomAction', data.action);
-          break;
-        case 'lobbyOn':
-          roomList.get(socket.room_id).setLobbyEnabled(true);
-          roomList.get(socket.room_id).broadCast(socket.id, 'roomAction', data.action);
-          break;
-        case 'lobbyOff':
-          roomList.get(socket.room_id).setLobbyEnabled(false);
-          roomList.get(socket.room_id).broadCast(socket.id, 'roomAction', data.action);
-          break;
-      }
-      log.debug('Room status', {
-        locked: roomList.get(socket.room_id).isLocked(),
-        lobby: roomList.get(socket.room_id).isLobbyEnabled()
-      });
-    });
-
-    socket.on('roomLobby', (data) => {
-      if (!roomList.has(socket.room_id)) return;
-
-      data.room = roomList.get(socket.room_id).toJson();
-
-      log.debug('Room lobby', {
-        peer_id: data.peer_id,
-        peer_name: data.peer_name,
-        peers_id: data.peers_id,
-        lobby: data.lobby_status,
-        broadcast: data.broadcast
-      });
-
-      if (data.peers_id && data.broadcast) {
-        for (let peer_id in data.peers_id) {
-          roomList.get(socket.room_id).sendTo(data.peers_id[peer_id], 'roomLobby', data);
-        }
-      } else {
-        roomList.get(socket.room_id).sendTo(data.peer_id, 'roomLobby', data);
-      }
-    });
-
     socket.on('peerAction', (data) => {
       if (!roomList.has(socket.room_id)) return;
 
@@ -263,33 +199,6 @@ function startServer() {
       roomList.get(socket.room_id).broadCast(socket.id, 'updatePeerInfo', data);
     });
 
-    socket.on('fileInfo', (data) => {
-      if (!roomList.has(socket.room_id)) return;
-
-      log.debug('Send File Info', data);
-      if (data.broadcast) {
-        roomList.get(socket.room_id).broadCast(socket.id, 'fileInfo', data);
-      } else {
-        roomList.get(socket.room_id).sendTo(data.peer_id, 'fileInfo', data);
-      }
-    });
-
-    socket.on('file', (data) => {
-      if (!roomList.has(socket.room_id)) return;
-
-      if (data.broadcast) {
-        roomList.get(socket.room_id).broadCast(socket.id, 'file', data);
-      } else {
-        roomList.get(socket.room_id).sendTo(data.peer_id, 'file', data);
-      }
-    });
-
-    socket.on('fileAbort', (data) => {
-      if (!roomList.has(socket.room_id)) return;
-
-      roomList.get(socket.room_id).broadCast(socket.id, 'fileAbort', data);
-    });
-
     socket.on('shareVideoAction', (data) => {
       if (!roomList.has(socket.room_id)) return;
 
@@ -299,22 +208,6 @@ function startServer() {
       } else {
         roomList.get(socket.room_id).sendTo(data.peer_id, 'shareVideoAction', data);
       }
-    });
-    // Google Meet 화이트 보드 기능
-
-    socket.on('wbCanvasToJson', (data) => {
-      if (!roomList.has(socket.room_id)) return;
-
-      // let objLength = bytesToSize(Object.keys(data).length);
-      // log.debug('Send Whiteboard canvas JSON', { length: objLength });
-      roomList.get(socket.room_id).broadCast(socket.id, 'wbCanvasToJson', data);
-    });
-
-    socket.on('whiteboardAction', (data) => {
-      if (!roomList.has(socket.room_id)) return;
-
-      log.debug('Whiteboard', data);
-      roomList.get(socket.room_id).broadCast(socket.id, 'whiteboardAction', data);
     });
 
     socket.on('setVideoOff', (data) => {
@@ -333,22 +226,6 @@ function startServer() {
 
       log.debug('User joined', data);
       roomList.get(socket.room_id).addPeer(new Peer(socket.id, data));
-
-      if (roomList.get(socket.room_id).isLocked()) {
-        log.debug('User rejected because room is locked');
-        return cb('isLocked');
-      }
-
-      if (roomList.get(socket.room_id).isLobbyEnabled()) {
-        log.debug('User waiting to join room because lobby is enabled');
-        roomList.get(socket.room_id).broadCast(socket.id, 'roomLobby', {
-          peer_id: data.peer_info.peer_id,
-          peer_name: data.peer_info.peer_name,
-          lobby_status: 'waiting'
-        });
-        return cb('isLobby');
-      }
-
       cb(roomList.get(socket.room_id).toJson());
     });
 
@@ -584,9 +461,6 @@ function startServer() {
     }
   });
 
-  function getIP(req) {
-    return req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-  }
   function allowedIP(ip) {
     return authHost != null && authHost.isAuthorized(ip);
   }
