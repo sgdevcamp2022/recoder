@@ -34,6 +34,7 @@
             android:layout_height="?attr/actionBarSize"
             android:gravity="center"
             android:text="회의참여"
+            android:textColor="@color/gray_500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/home_account_img"
             app:layout_constraintStart_toStartOf="@+id/home_back"

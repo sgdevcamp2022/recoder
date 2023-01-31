@@ -16,4 +16,12 @@
     <string name="select_sound_btn">select sound source button</string>
     <string name="meeting_link_label">회의 링크</string>
     <string name="enter_meeting_btn">참여하기</string>
+    <string name="join_by_code_btn">참여</string>
+    <string name="join_by_code_title">코드로 참여</string>
+    <string name="enter_code_label">회의 주최자가 제공한 코드를 입력하세요.</string>
+    <string name="join_by_code_fragment_label">Join By Code Screen</string>
+    <string name="edit_text_label">회의 코드</string>
+    <string name="example_code">예: abc-defg-hij</string>
+    <string name="initial_last_meeting_code">\'abc-defg-hij\'</string>
+    <string name="reconnect">다시 참여</string>
 </resources>
