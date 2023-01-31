@@ -1,4 +1,4 @@
-import testController from './test_controller.js';
+import roomController from './room_controller.js';
 import express from 'express';
 import Host from '../src/Host.js';
 import path from 'path';
@@ -27,7 +27,7 @@ function getIP(req) {
 }
 
 const router = express.Router();
-router.get('/createLink', testController.getTest);
+router.get('/createLink', roomController.createLink);
 router.get('/', (_req, res) => {
   if (hostCfg.protected == true) {
     hostCfg.authenticated = false;
