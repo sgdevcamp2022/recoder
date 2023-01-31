@@ -11,6 +11,17 @@
         android:label="@string/home_fragment_label"
         tools:layout="@layout/fragment_home"
         >
+        <action
+            android:id="@+id/action_home_fragment_to_join_by_code_fragment"
+            app:destination="@id/join_by_code_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/join_by_code_fragment"
+        android:name="com.recoder.presentation.ui.home.JoinByCodeFragment"
+        android:label="@string/join_by_code_fragment_label"
+        tools:layout="@layout/fragment_join_by_code"
+        >
     </fragment>
 
 </navigation>
