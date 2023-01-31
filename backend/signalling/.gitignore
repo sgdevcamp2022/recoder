@@ -2,3 +2,6 @@ node_modules
 /public/*
 /views/*
 /config/*
+/src/my-app
+/src/app
+/src/public
