@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/join_by_code_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    android:id="@+id/join_by_code_fragment"
     tools:context=".ui.home.JoinByCodeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -65,26 +65,68 @@
             android:layout_height="wrap_content"
             android:text="@string/enter_code_label"
             android:textColor="@color/gray_400"
-            app:layout_constraintBottom_toTopOf="@+id/code_text_field"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintVertical_bias="0"
+            app:layout_constraintBottom_toTopOf="@+id/code_text_field_layout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/code_text_field"
+            android:id="@+id/code_text_field_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:helperText="@string/example_code"
+            app:helperTextEnabled="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_field_description">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/code_text_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="true"
+                android:hint="@string/edit_text_label"
                 android:inputType="text"
                 android:textColor="@color/gray_400" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:id="@+id/join_last_meeting_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/round_bg_outlined_r10"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@+id/code_text_field_layout"
+            app:layout_constraintTop_toBottomOf="@+id/code_text_field_layout">
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/outline_keyboard_24" />
+
+            <TextView
+                android:id="@+id/last_meeting_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:text="@string/initial_last_meeting_code"
+                android:textColor="@color/gray_400" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:text="@string/reconnect"
+                android:textColor="@color/gray_400" />
+
+
+        </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
