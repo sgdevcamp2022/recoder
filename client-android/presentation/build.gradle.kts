@@ -45,6 +45,8 @@ dependencies {
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    implementation("com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.5.6")
+
     kapt(Kapt.VIEW_LIBRARIES)
     androidTestImplementation(AndroidTestImpl.VIEW_LIBRARIES)
 //    debugImplementation(DebugImpl.VIEW_LIBRARIES)
