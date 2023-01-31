@@ -1,6 +1,3 @@
 node_modules
 /public/*
 /views/*
-/src/my-app
-/src/app
-/src/public
