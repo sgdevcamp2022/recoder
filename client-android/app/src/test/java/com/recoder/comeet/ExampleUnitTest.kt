@@ -1,4 +1,4 @@
-package com.recoder.reco
+package com.recoder.comeet
 
 import org.junit.Test
 

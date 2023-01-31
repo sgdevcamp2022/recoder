@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_nav_graph"
+    app:startDestination="@id/home_fragment">
+
+    <fragment
+        android:id="@id/home_fragment"
+        android:name="com.recoder.presentation.ui.home.HomeFragment"
+        android:label="@string/home_fragment_label"
+        tools:layout="@layout/fragment_home"
+        >
+        <action
+            android:id="@+id/action_home_fragment_to_join_by_code_fragment"
+            app:destination="@id/join_by_code_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/join_by_code_fragment"
+        android:name="com.recoder.presentation.ui.home.JoinByCodeFragment"
+        android:label="@string/join_by_code_fragment_label"
+        tools:layout="@layout/fragment_join_by_code"
+        >
+    </fragment>
+
+</navigation>
