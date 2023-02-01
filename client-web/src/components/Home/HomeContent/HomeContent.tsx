@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { MeetingButtons } from "../MeetingButtons/MeetingButtons";
-import ArrowLeft from "../../assets/images/left_arrow.svg";
-import ArrowRight from "../../assets/images/right_arrow.svg";
-import DescriptionIcon from "../../assets/images/description_image_1.svg";
+import ArrowLeft from "../../../assets/images/left_arrow.svg";
+import ArrowRight from "../../../assets/images/right_arrow.svg";
+import DescriptionIcon from "../../../assets/images/description_image_1.svg";
 
 const ContentBox = styled.div`
   height: calc(100vh - 64px);

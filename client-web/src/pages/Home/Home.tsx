@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { HomeContent } from "../../components/HomeContent/HomeContent";
-import { HomeHeader } from "../../components/HomeHeader/HomeHeader";
+import { HomeContent } from "../../components/Home/HomeContent/HomeContent";
+import { HomeHeader } from "../../components/Home/HomeHeader/HomeHeader";
 
 const HomeBox = styled.div`
   min-height: 100%;
