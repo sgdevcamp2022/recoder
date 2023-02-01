@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_home_fragment_to_join_by_code_fragment"
             app:destination="@id/join_by_code_fragment" />
+        <action
+            android:id="@+id/action_home_fragment_to_new_meeting_bottom_sheet"
+            app:destination="@id/new_meeting_bottom_sheet" />
     </fragment>
 
     <fragment
@@ -22,6 +25,18 @@
         android:label="@string/join_by_code_fragment_label"
         tools:layout="@layout/fragment_join_by_code"
         >
+        <action
+            android:id="@+id/action_join_by_code_fragment_to_home_fragment2"
+            app:destination="@id/home_fragment" />
     </fragment>
+
+    <dialog
+        android:id="@+id/new_meeting_bottom_sheet"
+        android:name="com.recoder.presentation.ui.home.HomeBottomSheetFragment"
+        tools:layout="@layout/fragment_home_bottom_sheet" >
+        <action
+            android:id="@+id/action_new_meeting_bottom_sheet_to_home_fragment"
+            app:destination="@id/home_fragment" />
+    </dialog>
 
 </navigation>

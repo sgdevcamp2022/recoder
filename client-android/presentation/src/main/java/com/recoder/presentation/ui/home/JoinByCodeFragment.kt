@@ -1,7 +1,6 @@
 package com.recoder.presentation.ui.home
 
 import android.content.Context
-import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,14 +16,10 @@ import com.recoder.presentation.ui.MainActivity
 
 class JoinByCodeFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = JoinByCodeFragment()
-    }
-
     private lateinit var viewModel: JoinByCodeViewModel
     private val binding by viewBinding(FragmentJoinByCodeBinding::bind)
     private lateinit var mainActivity : MainActivity
-
+    private lateinit var mInputMethodManager: InputMethodManager
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
@@ -39,6 +34,9 @@ class JoinByCodeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.codeTextField.requestFocus()
+        mInputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        mInputMethodManager.showSoftInput(binding.codeTextField, InputMethodManager.SHOW_IMPLICIT)
     }
 
 
