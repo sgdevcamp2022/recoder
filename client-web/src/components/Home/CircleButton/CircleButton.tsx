@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { CircleButtonProps } from "../CircleButton/CircleButton.types";
+import { CircleButtonProps } from "./CircleButton.types";
 
 const ButtonBox = styled.button`
   width: 48px;

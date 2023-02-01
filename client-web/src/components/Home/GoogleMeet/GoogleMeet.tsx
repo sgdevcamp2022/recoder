@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import GoogleIcon from "../../assets/images/google_icon.png";
+import GoogleIcon from "../../../assets/images/google_icon.png";
 
 const GoogleMeetBox = styled.div`
   flex: 1 1 auto;

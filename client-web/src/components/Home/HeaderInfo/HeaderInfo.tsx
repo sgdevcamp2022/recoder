@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import HelpIcon from "../../assets/images/help.png";
-import FeedbackIcon from "../../assets/images/feedback.png";
-import SettingsIcon from "../../assets/images/settings.png";
+import HelpIcon from "../../../assets/images/help.png";
+import FeedbackIcon from "../../../assets/images/feedback.png";
+import SettingsIcon from "../../../assets/images/settings.png";
 import DateTime from "../DateTime/DateTime";
 import { CircleButton } from "../CircleButton/CircleButton";
 
