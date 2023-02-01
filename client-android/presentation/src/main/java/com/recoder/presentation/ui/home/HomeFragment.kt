@@ -2,14 +2,13 @@ package com.recoder.presentation.ui.home
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
+import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.recoder.presentation.R
 import com.recoder.presentation.databinding.FragmentHomeBinding
 import com.recoder.presentation.ui.MainActivity
