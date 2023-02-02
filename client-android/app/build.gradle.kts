@@ -6,17 +6,17 @@ plugins {
 }
 
 android {
-    namespace = "com.recoder.reco"
+    namespace = "com.recoder.comeet"
     compileSdk = Configurations.compileSdk
 
     defaultConfig {
-        applicationId = "com.recoder.reco"
+        applicationId = "com.recoder.comeet"
         minSdk = Configurations.minSdk
         targetSdk = Configurations.targetSdk
         versionCode = Configurations.versionCode
         versionName = Configurations.versionName
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -47,5 +47,4 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":presentation"))
     implementation(project(":data"))
-
 }

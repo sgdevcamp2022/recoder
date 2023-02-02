@@ -1,13 +1,30 @@
 <resources>
     <string name="app_name">presentation</string>
     <string name="action_settings">Settings</string>
+    <string name="menu_btn">Menu Button</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="home_fragment_label">Home Screen</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="title_activity_room">RoomActivity</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="back_button">Back button</string>
+    <string name="select_sound_btn">select sound source button</string>
+    <string name="meeting_link_label">회의 링크</string>
+    <string name="enter_meeting_btn">참여하기</string>
+    <string name="join_by_code_btn">참여</string>
+    <string name="join_by_code_title">코드로 참여</string>
+    <string name="enter_code_label">회의 주최자가 제공한 코드를 입력하세요.</string>
+    <string name="join_by_code_fragment_label">Join By Code Screen</string>
+    <string name="edit_text_label">회의 코드</string>
+    <string name="example_code">예: abc-defg-hij</string>
+    <string name="initial_last_meeting_code">\'abc-defg-hij\'</string>
+    <string name="reconnect">다시 참여</string>
+    <string name="get_url_link">공유할 회의 링크 받기</string>
+    <string name="start_meeting_now">즉석 회의 시작</string>
+    <string name="close_button_string">닫기</string>
 </resources>
