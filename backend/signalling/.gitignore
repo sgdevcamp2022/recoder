@@ -5,3 +5,5 @@ node_modules
 /src/my-app
 /src/app
 /src/public
+.DS_Store
+.DS_Store?
