@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --watch backend/ backend/signalling/index.js",
+    "start": "node src/Server.js",
+    "start:dev": "nodemon --watch ../../ src/Server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
@@ -35,7 +36,6 @@
     "swagger-ui-express": "4.6.0",
     "yamljs": "0.3.0",
     "uuid": "9.0.0"
-
   },
   "type": "module"
 }
