@@ -22,8 +22,6 @@ import Room from './Room.js';
 import Peer from './Peer.js';
 import Logger from './Logger.js';
 import { Server } from 'socket.io';
-import { serve, setup } from 'swagger-ui-express';
-import swaggerDocument from '../api/swagger.json' assert { type: 'json' };
 import { init } from '@sentry/node';
 import { CaptureConsole } from '@sentry/integrations';
 import path from 'path';
@@ -106,7 +104,6 @@ function startServer() {
   app.use(express.json());
   app.use(express.static(dir.public));
   app.use(express.urlencoded({ extended: true }));
-  app.use(apiBasePath + '/docs', serve, setup(swaggerDocument)); // api docs
   app.use('/', router);
 
   httpServer.listen(listenPort, () => {
@@ -460,18 +457,4 @@ function startServer() {
       };
     }
   });
-
-  function allowedIP(ip) {
-    return authHost != null && authHost.isAuthorized(ip);
-  }
-  function removeIP(socket) {
-    if (hostCfg.protected == true) {
-      let ip = socket.handshake.address;
-      if (ip && allowedIP(ip)) {
-        authHost.deleteIP(ip);
-        hostCfg.authenticated = false;
-        log.debug('Remove IP from auth', { ip: ip });
-      }
-    }
-  }
 }
