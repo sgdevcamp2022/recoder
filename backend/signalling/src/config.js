@@ -26,8 +26,7 @@ export const listenIp = '0.0.0.0';
 export const listenPort = process.env.PORT || 5000;
 export const sslCrt = 'app/ssl/cert.pem';
 export const sslKey = 'app/ssl/key.pem';
-export const ngrokAuthToken = '';
-export const apiKeySecret = 'mirotalksfu_default_secret';
+export const apiKeySecret = 'CoMeet_default_secret';
 export const sentry = {
   enabled: false,
   DSN: '',
