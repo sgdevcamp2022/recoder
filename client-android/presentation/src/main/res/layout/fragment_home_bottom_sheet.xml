@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottom_sheet_white_r20"
+    android:minHeight="200dp"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="20dp"
+    tools:context=".ui.home.HomeBottomSheetFragment">
+
+    <LinearLayout
+        android:id="@+id/btn_get_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/btn_start_meeting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:src="@drawable/baseline_link_24" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/get_url_link"
+            android:textColor="@color/gray_500" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_start_meeting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/btn_close"
+        app:layout_constraintEnd_toEndOf="@+id/btn_get_url"
+        app:layout_constraintStart_toStartOf="@+id/btn_get_url"
+        app:layout_constraintTop_toBottomOf="@+id/btn_get_url">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:src="@drawable/outline_videocam_24_gray" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/start_meeting_now"
+            android:textColor="@color/gray_500" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btn_start_meeting"
+        app:layout_constraintStart_toStartOf="@+id/btn_start_meeting"
+        app:layout_constraintTop_toBottomOf="@+id/btn_start_meeting">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:src="@drawable/baseline_close_24" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/close_button_string"
+            android:textColor="@color/gray_500" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.application")
+    id("com.android.library")
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
 }
@@ -38,15 +38,16 @@ android {
 
 dependencies {
     implementation(project(":domain"))
-    implementation("com.google.android.material:material:1.4.+")
-    implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.4.1")
-    implementation("androidx.navigation:navigation-ui-ktx:2.4.1")
-    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
-
     implementation(Libraries.VIEW_LIBRARIES)
+    implementation("androidx.appcompat:appcompat:1.6.0")
+    implementation("com.google.android.material:material:1.4.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    implementation("com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.5.6")
+
     kapt(Kapt.VIEW_LIBRARIES)
-    debugImplementation(DebugImpl.VIEW_LIBRARIES)
     androidTestImplementation(AndroidTestImpl.VIEW_LIBRARIES)
+//    debugImplementation(DebugImpl.VIEW_LIBRARIES)
 }
