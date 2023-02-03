@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_nav_graph"
+    app:startDestination="@id/home_fragment">
+
+    <fragment
+        android:id="@id/home_fragment"
+        android:name="com.recoder.presentation.ui.home.HomeFragment"
+        android:label="@string/home_fragment_label"
+        tools:layout="@layout/fragment_home"
+        >
+        <action
+            android:id="@+id/action_home_fragment_to_join_by_code_fragment"
+            app:destination="@id/join_by_code_fragment" />
+        <action
+            android:id="@+id/action_home_fragment_to_new_meeting_bottom_sheet"
+            app:destination="@id/new_meeting_bottom_sheet" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/join_by_code_fragment"
+        android:name="com.recoder.presentation.ui.home.JoinByCodeFragment"
+        android:label="@string/join_by_code_fragment_label"
+        tools:layout="@layout/fragment_join_by_code"
+        >
+        <action
+            android:id="@+id/action_join_by_code_fragment_to_home_fragment2"
+            app:destination="@id/home_fragment" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/new_meeting_bottom_sheet"
+        android:name="com.recoder.presentation.ui.home.HomeBottomSheetFragment"
+        tools:layout="@layout/fragment_home_bottom_sheet" >
+        <action
+            android:id="@+id/action_new_meeting_bottom_sheet_to_home_fragment"
+            app:destination="@id/home_fragment" />
+    </dialog>
+
+</navigation>

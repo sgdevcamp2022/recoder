@@ -12,7 +12,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "reco-android"
+rootProject.name = "comeet-android"
 include(":app")
 include(":domain")
 include(":data")
