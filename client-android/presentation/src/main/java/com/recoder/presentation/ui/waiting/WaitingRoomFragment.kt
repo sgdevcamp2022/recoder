@@ -50,12 +50,37 @@ class WaitingRoomFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.videoToggleButton.setOnClickListener {
-            if (!hasPermissions(requireContext())) {}
+            if (!hasPermissions(requireContext()))
+                activityResultLauncher.launch(Manifest.permission.CAMERA)
             else setCameraPreview(true)
         }
 
+        cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+
+        cameraProviderFuture.addListener(Runnable {
+            val cameraProvider = cameraProviderFuture.get()
+            bindPreview(cameraProvider)
+        }, ContextCompat.getMainExecutor(requireContext()))
 
     }
+
+    fun bindPreview(cameraProvider : ProcessCameraProvider) {
+        var preview : Preview = Preview.Builder().build()
+
+        var cameraSelector : CameraSelector = CameraSelector.Builder()
+            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+            .build()
+        preview.setSurfaceProvider(binding.videoPreview.previewView.surfaceProvider)
+
+        var camera = cameraProvider.bindToLifecycle(this as LifecycleOwner, cameraSelector, preview)
+    }
+
+    private val activityResultLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+            if (isGranted) setCameraPreview(true)
+            else Toast.makeText(context, "권한 획득 실패", Toast.LENGTH_LONG).show()
+        }
 
     private fun setCameraPreview(isOn: Boolean) {
         val visibility : Int = if(isOn) View.VISIBLE else View.INVISIBLE
