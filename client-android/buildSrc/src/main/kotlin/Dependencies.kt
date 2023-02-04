@@ -50,7 +50,7 @@ object Versions {
 	const val MOCK_TEST = "2.28.2"
 	const val TURBINE = "0.12.1"
 
-	const val TIMBER = "4.7.1"
+	const val TIMBER = "5.0.1"
 	const val DATASTORE = "1.1.0-alpha01"
 
 	const val APP_COMPAT_THEME = "0.25.1" // 컴포즈에서 AppTheme 을 사용

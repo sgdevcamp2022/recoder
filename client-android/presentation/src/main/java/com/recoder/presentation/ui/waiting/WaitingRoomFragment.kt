@@ -53,9 +53,8 @@ class WaitingRoomFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.videoToggleButton.setOnClickListener {
-            previewCamera()
-        }
+        binding.videoToggleButton.setOnClickListener { previewCamera() }
+        binding.micToggleButton.setOnClickListener { enableAudio() }
 
 
         cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
@@ -65,11 +64,20 @@ class WaitingRoomFragment : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
+    private fun enableAudio() {
+        if (!hasPermissions(requireContext(), PERMISSION_RECORD_AUDIO)) {
+            activityResultLauncher.launch(PERMISSION_RECORD_AUDIO)
+        } else {
+            binding.videoToggleIcon.isSelected = false
+        }
+    }
+
     private fun previewCamera() {
         if (!hasPermissions(requireContext(), PERMISSION_CAMERA)) {
             activityResultLauncher.launch(PERMISSION_CAMERA)
         } else {
             setCameraPreview(true)
+            binding.videoToggleIcon.isSelected = true
         }
     }
 
