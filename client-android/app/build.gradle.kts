@@ -47,4 +47,7 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":presentation"))
     implementation(project(":data"))
+
+    kapt(Kapt.APP_LIBRARIES)
+    implementation(Libraries.APP_LIBRARIES)
 }
