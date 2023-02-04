@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.recoder.presentation.R
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private lateinit var viewModel: HomeBottomSheetViewModel
