@@ -7,7 +7,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.recoder.presentation.R
-import com.recoder.presentation.ui.home.JoinByCodeFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,13 +20,13 @@ class MainActivity : AppCompatActivity() {
         val view = currentFocus
         if (
             view != null &&
-            (ev!!.action == MotionEvent.ACTION_UP || ev!!.action == MotionEvent.ACTION_MOVE) &&
+            (ev!!.action == MotionEvent.ACTION_UP || ev.action == MotionEvent.ACTION_MOVE) &&
             view is EditText && !view.javaClass.name.startsWith("android.webkit.")
         ) {
             val scrcoords = IntArray(2)
             view.getLocationOnScreen(scrcoords)
 
-            val x = ev!!.rawX + view.getLeft() - scrcoords[0]
+            val x = ev.rawX + view.getLeft() - scrcoords[0]
             val y = ev.rawY + view.getTop() - scrcoords[1]
 
             if (x < view.getLeft() || x > view.getRight() || y < view.getTop() || y > view.getBottom()) {
