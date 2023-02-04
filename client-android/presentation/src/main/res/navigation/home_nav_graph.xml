@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_nav_graph"
-    app:startDestination="@id/home_fragment">
+    app:startDestination="@id/waiting_room_fragment">
 
     <fragment
         android:id="@id/home_fragment"
@@ -28,6 +28,13 @@
         <action
             android:id="@+id/action_join_by_code_fragment_to_home_fragment2"
             app:destination="@id/home_fragment" />
+    </fragment>
+
+    <fragment android:id="@+id/waiting_room_fragment"
+        android:name="com.recoder.presentation.ui.waiting.WaitingRoomFragment"
+        tools:layout="@layout/fragment_waiting_room"
+        android:label="@string/waiting_room_fragment_label">
+
     </fragment>
 
     <dialog
