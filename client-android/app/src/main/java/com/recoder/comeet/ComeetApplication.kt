@@ -1,8 +1,10 @@
 package com.recoder.comeet
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
+@HiltAndroidApp
 class ComeetApplication : Application() {
     override fun onCreate() {
         super.onCreate()

@@ -22,8 +22,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.common.util.concurrent.ListenableFuture
 import com.recoder.presentation.R
 import com.recoder.presentation.databinding.FragmentWaitingRoomBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class WaitingRoomFragment : Fragment() {
 
     companion object {

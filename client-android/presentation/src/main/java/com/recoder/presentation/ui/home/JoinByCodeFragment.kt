@@ -12,8 +12,9 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.recoder.presentation.R
 import com.recoder.presentation.databinding.FragmentJoinByCodeBinding
 import com.recoder.presentation.ui.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class JoinByCodeFragment : Fragment() {
 
     private lateinit var viewModel: JoinByCodeViewModel
