@@ -15,6 +15,7 @@ object Versions {
 	const val ROOM = "2.4.3"
 	const val PAGING_KTX = "3.1.1"
 
+	const val OKHTTP = "5.0.0-alpha.10"
 	const val RETROFIT = "2.9.0"
 	const val MOSHI = "1.14.0"
 	const val JSON = "1.3.3"
@@ -96,6 +97,10 @@ object Libraries {
 	private const val ZXING = "com.google.zxing:core:${Versions.ZXING}"
 
 	private const val RETROFIT = "com.squareup.retrofit2:retrofit:${Versions.RETROFIT}"
+	private const val RETROFIT_CONVERTER = "com.squareup.retrofit2:converter-gson:${Versions.RETROFIT}"
+	private const val OKHTTP3 = "com.squareup.okhttp3:okhttp:${Versions.OKHTTP}"
+	private const val OKHTTP3_LOGGING_INTERCEPTOR = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
+
 	private const val MOSHI_KOTLIN = "com.squareup.moshi:moshi-kotlin:${Versions.MOSHI}"
 	private const val MOSHI_ADAPTERS = "com.squareup.moshi:moshi-adapters:${Versions.MOSHI}"
 	private const val CONVERTER_MOSHI = "com.squareup.retrofit2:converter-moshi:${Versions.RETROFIT}"
@@ -184,8 +189,6 @@ object Libraries {
 		NAVIGATION_UI_KTX,
 	)
 	val DATA_LIBRARIES = arrayListOf(
-		ROOM_RUNTIME,
-		ROOM_KTX,
 		COROUTINE_CORE,
 		RETROFIT,
 		MOSHI_KOTLIN,
@@ -193,15 +196,11 @@ object Libraries {
 		CONVERTER_MOSHI,
 		HILT,
 		HILT_WORK,
-		FIREBASE_AUTH_KTX,
-		FIREBASE_FIRESTORE_KTX,
-		FIREBASE_STORAGE_KTX,
-		TEXT_RECOGNITION_KOREAN,
-		WORK_MANAGER,
+		OKHTTP3,
+		OKHTTP3_LOGGING_INTERCEPTOR,
+		RETROFIT,
+		RETROFIT_CONVERTER,
 		TIMBER,
-		DATASTORE,
-		DATASTORE_CORE,
-		PLAY_SERVICES_LOCATION
 	)
 	val DOMAIN_LIBRARIES = arrayListOf(
 		COROUTINE_CORE,
@@ -212,13 +211,10 @@ object Libraries {
 	val APP_LIBRARIES = arrayListOf(
 		HILT,
 		HILT_WORK,
-		RETROFIT,
 		MOSHI_KOTLIN,
 		MOSHI_ADAPTERS,
 		CONVERTER_MOSHI,
 		TIMBER,
-		DATASTORE,
-		DATASTORE_CORE,
 	)
 }
 
@@ -238,7 +234,6 @@ object TestImpl {
 
 	val TEST_LIBRARIES = arrayListOf(
 		JUNIT4,
-		PAGING_COMMON,
 		JUNIT_JUPITER_PARAMS,
 		JUNIT_JUPITER_ENGINE,
 		JUNIT_VINTAGE_ENGINE,
@@ -279,14 +274,8 @@ object AnnotationProcessors {
 	private const val ROOM_COMPILER = "androidx.room:room-compiler:${Versions.ROOM}"
 	private const val GLIDE_COMPILER = "com.github.bumptech.glide:compiler:${Versions.GLIDE}"
 
-	val VIEW_LIBRARIES = arrayListOf(
-		GLIDE_COMPILER
-	)
-
-	val DATA_LIBRARIES = arrayListOf(
-		ROOM_COMPILER
-	)
-
+	val VIEW_LIBRARIES = arrayListOf("")
+	val DATA_LIBRARIES = arrayListOf("")
 	val APP_LIBRARIES = arrayListOf("")
 }
 
@@ -303,7 +292,6 @@ object Kapt {
 	)
 
 	val DATA_LIBRARIES = arrayListOf(
-		ROOM_COMPILER,
 		MOSHI_KOTLIN_CODEGEN,
 		HILT,
 		HILT_WORK
