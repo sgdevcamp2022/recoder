@@ -155,27 +155,6 @@ function startServer() {
       callback({ peerCounts: peerCounts });
     });
 
-    socket.on('cmd', (data) => {
-      if (!roomList.has(socket.room_id)) return;
-
-      log.debug('Cmd', data);
-
-      // cmd|data
-      const words = data.split('|');
-      let cmd = words[0];
-      switch (cmd) {
-        case 'privacy':
-          roomList
-            .get(socket.room_id)
-            .getPeers()
-            .get(socket.id)
-            .updatePeerInfo({ type: cmd, status: words[2] == 'true' });
-          break;
-      }
-
-      roomList.get(socket.room_id).broadCast(socket.id, 'cmd', data);
-    });
-
     socket.on('peerAction', (data) => {
       if (!roomList.has(socket.room_id)) return;
 
@@ -194,17 +173,6 @@ function startServer() {
       // update my peer_info status to all in the room
       roomList.get(socket.room_id).getPeers().get(socket.id).updatePeerInfo(data);
       roomList.get(socket.room_id).broadCast(socket.id, 'updatePeerInfo', data);
-    });
-
-    socket.on('shareVideoAction', (data) => {
-      if (!roomList.has(socket.room_id)) return;
-
-      log.debug('Share video: ', data);
-      if (data.peer_id == 'all') {
-        roomList.get(socket.room_id).broadCast(socket.id, 'shareVideoAction', data);
-      } else {
-        roomList.get(socket.room_id).sendTo(data.peer_id, 'shareVideoAction', data);
-      }
     });
 
     socket.on('setVideoOff', (data) => {
@@ -353,18 +321,6 @@ function startServer() {
       roomList.get(socket.room_id).closeProducer(socket.id, data.producer_id);
     });
 
-    socket.on('resume', async (_, callback) => {
-      await consumer.resume();
-      callback();
-    });
-
-    socket.on('getRoomInfo', (_, cb) => {
-      if (!roomList.has(socket.room_id)) return;
-
-      log.debug('Send Room Info to', getPeerName());
-      cb(roomList.get(socket.room_id).toJson());
-    });
-    // send room info to all the members
     socket.on('refreshParticipantsCount', () => {
       if (!roomList.has(socket.room_id)) return;
 
@@ -391,21 +347,8 @@ function startServer() {
       if (!roomList.has(socket.room_id)) return;
 
       log.debug('Disconnect', getPeerName());
-
       roomList.get(socket.room_id).removePeer(socket.id);
-
-      if (roomList.get(socket.room_id).getPeers().size === 0) {
-        if (roomList.get(socket.room_id).isLocked()) {
-          roomList.get(socket.room_id).setLocked(false);
-        }
-        if (roomList.get(socket.room_id).isLobbyEnabled()) {
-          roomList.get(socket.room_id).setLobbyEnabled(false);
-        }
-      }
-
       roomList.get(socket.room_id).broadCast(socket.id, 'removeMe', removeMeData());
-
-      removeIP(socket);
     });
 
     socket.on('exitRoom', async (_, callback) => {
@@ -426,8 +369,6 @@ function startServer() {
       }
 
       socket.room_id = null;
-
-      removeIP(socket);
 
       callback('Successfully exited room');
     });
