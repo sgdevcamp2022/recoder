@@ -19,6 +19,7 @@ object Versions {
 	const val RETROFIT = "2.9.0"
 	const val MOSHI = "1.14.0"
 	const val JSON = "1.3.3"
+	const val SANDWICH = "1.3.3"
 
 	const val ZXING = "3.5.1"
 
@@ -100,6 +101,8 @@ object Libraries {
 	private const val RETROFIT_CONVERTER = "com.squareup.retrofit2:converter-gson:${Versions.RETROFIT}"
 	private const val OKHTTP3 = "com.squareup.okhttp3:okhttp:${Versions.OKHTTP}"
 	private const val OKHTTP3_LOGGING_INTERCEPTOR = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
+
+	private const val SANDWICH = "com.github.skydoves:sandwich:${Versions.SANDWICH}"
 
 	private const val MOSHI_KOTLIN = "com.squareup.moshi:moshi-kotlin:${Versions.MOSHI}"
 	private const val MOSHI_ADAPTERS = "com.squareup.moshi:moshi-adapters:${Versions.MOSHI}"
@@ -206,7 +209,7 @@ object Libraries {
 		COROUTINE_CORE,
 		INJECT,
 		PAGING_COMMON_KTX,
-		ROOM_COMMON
+		ROOM_COMMON,
 	)
 	val APP_LIBRARIES = arrayListOf(
 		HILT,
