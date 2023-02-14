@@ -40,7 +40,12 @@ const httpServer = createServer(options, app);
 
 const io = new Server(httpServer, {
   maxHttpBufferSize: 1e7,
-  transports: ['websocket']
+  transports: ['websocket'],
+  cors: {
+    origin: 'http://localhost:3000'
+  },
+  transports: ['websocket', 'polling'],
+  allowEIO3: true
 });
 const host = 'https://' + 'localhost' + ':' + listenPort; // host url
 const apiBasePath = '/api/v1'; // API base path
