@@ -2,9 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home, Room, Wait } from "./pages";
-import store from "./store/config";
+import store from "./redux/store";
 import "./index.css";
 import { Provider } from "react-redux";
+import { Test } from "./pages/Test/Test";
 
 const router = createBrowserRouter([
   {
@@ -19,15 +20,17 @@ const router = createBrowserRouter([
     path: "/wait",
     element: <Wait />,
   },
+  {
+    path: "/test",
+    element: <Test />,
+  },
 ]);
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <RouterProvider router={router} />
+  </Provider>
 );
