@@ -1,13 +1,19 @@
+import { linkAPI } from "./apis/linkAPI";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { testAPI } from "./apis/testAPI";
 import testSlice from "./slices/testSlice";
 
 const rootReducer = combineReducers({
   test: testSlice.reducer,
+  [testAPI.reducerPath]: testAPI.reducer,
+  [linkAPI.reducerPath]: linkAPI.reducer,
 });
 
 const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(testAPI.middleware, linkAPI.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
