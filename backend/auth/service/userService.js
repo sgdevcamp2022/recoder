@@ -1,11 +1,7 @@
-import { verify } from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import jsonwebtoken from "jsonwebtoken";
 import Users from "../models/userModel.js";
-import MailService from "../service/mailService.js";
 import Auth from "../models/authModel.js";
-
-const { sign } = jsonwebtoken;
 
 const userService = {
   async create(username, password, email) {
