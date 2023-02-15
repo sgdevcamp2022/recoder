@@ -2,35 +2,53 @@ package com.recoder.presentation.ui.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.recoder.presentation.ui.util.MutableEventFlow
+import com.recoder.presentation.ui.util.asEventFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-abstract class BaseViewModel<S : ViewState, E : ViewEvent>(
-    initialState: S
+abstract class BaseViewModel<S : UiState, A : UiSideEffect, E : UiEvent>(
+	initialState: S,
 ) : ViewModel() {
 
-    abstract fun handleEvents(event: E)
+	private val _uiState = MutableStateFlow<S>(initialState)
+	val uiState = _uiState.asStateFlow()
 
-    private val _viewState: MutableStateFlow<S> = MutableStateFlow<S>(initialState)
-    val viewState = _viewState.asStateFlow()
+	private val _event: MutableEventFlow<E> = MutableEventFlow()
+	val event = _event.asEventFlow()
 
-    private val currentState: S
-        get() = _viewState.value
+	private val _effect: Channel<A> = Channel()
+	val effect = _effect.receiveAsFlow()
 
-    private val _event: MutableSharedFlow<E> = MutableSharedFlow()
+	private val currentState: S
+		get() = _uiState.value
 
-    protected fun updateState(reducer: S.() -> S) {
-        val newState = currentState.reducer()
-        _viewState.value = newState
-    }
+	init {
+		subscribeEvents()
+	}
 
-    open fun setEvent(event : E) {
-        deliverEvent(event)
-    }
+	open fun setEvent(event: E) {
+		val newEvent = event
+		viewModelScope.launch { _event.emit(newEvent) }
+	}
 
-    private fun deliverEvent(event : E) = viewModelScope.launch {
-        handleEvents(event)
-    }
+	// have to subscribe event flow in initializing view model
+	private fun subscribeEvents() = viewModelScope.launch {
+		_event.collect() { handleEvent(it) }
+	}
+
+	protected abstract suspend fun handleEvent(event: E)
+
+	protected fun setState(reduce: S.() -> S) {
+		val state = currentState.reduce()
+		_uiState.value = state
+	}
+
+	protected fun setEffect(vararg builder: A) {
+		for (effectValue in builder) {
+			viewModelScope.launch { _effect.send(effectValue) }
+		}
+	}
 }
+
