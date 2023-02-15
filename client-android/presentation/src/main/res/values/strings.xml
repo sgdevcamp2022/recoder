@@ -30,4 +30,6 @@
     <string name="screen_share">화면 공유</string>
     <string name="pseudo_code">recoder.com/meet/abc-defh-ijk</string>
     <string name="waiting_room_fragment_label">Waiting Room Screen</string>
+    <string name="new_meeting">새 회의</string>
+    <string name="join_by_code_button">코드로 참여</string>
 </resources>
