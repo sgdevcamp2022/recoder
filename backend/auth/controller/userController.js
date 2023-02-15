@@ -5,12 +5,13 @@ import Users from "../models/userModel.js";
 import MailService from "../service/mailService.js";
 import userService from "../service/userService.js";
 import Auth from "../models/authModel.js";
+import secretKey from "../config/jwt.json" assert { type: "json" };
 
 const { sign } = jsonwebtoken;
 
 const UsersController = {
   async findUsersById(req, res) {
-    const user = await Users.findById(req.UsersId);
+    const user = await Users.find();
     return res.json(user);
   },
   async register(req, res) {
@@ -62,7 +63,7 @@ const UsersController = {
     else {
       token = sign(
         { id: Userscheck._id },
-        "jwtSecret",
+        secretKey.secretKey,
         {
           expiresIn: "7 days",
         },
@@ -75,7 +76,7 @@ const UsersController = {
     const { email } = req.body;
     const token = sign(
       { id: email },
-      "jwtSecret",
+      secretKey.secretKey,
       {
         expiresIn: "7 days",
       },
@@ -90,11 +91,13 @@ const UsersController = {
         .status(401)
         .send({ auth: false, message: "No token provided." });
 
-    verify(token, process.env.JWTSECRET, function (err, decoded) {
-      if (err)
+    verify(token, secretKey.secretKey, function (err, decoded) {
+      if (err) {
+        console.log(err);
         return res
           .status(500)
           .send({ auth: false, message: "Failed to authenticate token." });
+      }
 
       req.UsersId = decoded.id;
       next();
