@@ -1,4 +1,4 @@
-package com.recoder.presentation.ui
+package com.recoder.presentation.ui.home
 
 import android.content.Context
 import android.os.Bundle
@@ -6,16 +6,26 @@ import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.material.snackbar.Snackbar
 import com.recoder.presentation.R
+import com.recoder.presentation.databinding.ActivityHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity() {
+
+    private val binding by viewBinding(ActivityHomeBinding::bind)
+//    private val homeFragment by lazy { HomeFragment() }
+//    private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_home)
     }
+
+    private fun showSnackBar(text: String) =
+        Snackbar.make(binding.root, text, Snackbar.LENGTH_SHORT).show()
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         val view = currentFocus
@@ -37,4 +47,6 @@ class MainActivity : AppCompatActivity() {
         }
         return super.dispatchTouchEvent(ev)
     }
+
+
 }
