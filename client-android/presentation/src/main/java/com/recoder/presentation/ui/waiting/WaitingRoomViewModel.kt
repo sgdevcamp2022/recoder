@@ -1,7 +1,13 @@
 package com.recoder.presentation.ui.waiting
 
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class WaitingRoomViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+@HiltViewModel
+
+class WaitingRoomViewModel @Inject constructor(
+
+): ViewModel() {
+
 }

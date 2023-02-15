@@ -17,6 +17,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.snackbar.Snackbar
 import com.google.common.util.concurrent.ListenableFuture
@@ -24,7 +25,6 @@ import com.recoder.presentation.R
 import com.recoder.presentation.databinding.FragmentWaitingRoomBinding
 import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class WaitingRoomFragment : Fragment() {
 
     companion object {
@@ -34,7 +34,7 @@ class WaitingRoomFragment : Fragment() {
             ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
     }
 
-    private lateinit var viewModel: WaitingRoomViewModel
+    private val viewModel: WaitingRoomViewModel by viewModels()
     private lateinit var binding: FragmentWaitingRoomBinding
     private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
 
