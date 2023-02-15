@@ -1,65 +1,69 @@
 import { verify } from "jsonwebtoken";
-import { hashSync, compareSync } from "bcrypt";
+import bcrypt from "bcrypt";
 import jsonwebtoken from "jsonwebtoken";
 import Users from "../models/userModel.js";
+import MailService from "../service/mailService.js";
+import userService from "../service/userService.js";
+import Auth from "../models/authModel.js";
+import secretKey from "../config/jwt.json" assert { type: "json" };
+
 const { sign } = jsonwebtoken;
 
 const UsersController = {
   async findUsersById(req, res) {
-    const user = await Users.findById(req.UsersId);
+    const user = await Users.find();
     return res.json(user);
   },
   async register(req, res) {
-    const { username, password, email } = req.body;
-    let Userscheck = await Users.findOne().where("email").equals(email);
-    if (Userscheck)
-      return res.status(400).json({ error: "wrong Usersname or password" });
-    else {
-      const newUser = new Users({
-        username,
-        password: hashSync(password, 10),
-        email,
-        role: 0,
-      });
-      Users.create(newUser);
+    try {
+      const { username, password, email } = req.body;
+      let Userscheck = await Users.findOne().where("email").equals(email);
+      if (Userscheck)
+        return res.status(400).json({ error: "wrong Usersname or password" });
+      else {
+        const verifyNumber = await userService.createAuthNumber(email);
+        userService.create(username, password, email);
+        MailService.sendMail(email, verifyNumber);
+      }
+      return res.json("Registred");
+    } catch (err) {
+      res.status(500).send({ err: err, message: "user creation failed" });
     }
-    return res.json("Registred");
   },
-  async update(req, res) {
-    const { username, password, email } = req.body;
-
-    let Userscheck = await Users.findOne().where("email").equals(email);
-    if (!Userscheck)
-      return res.status(400).json({ error: "wrong Usersname or password" });
-    else {
-      const UsersUpdate = new Users({
-        username,
-        password: hashSync(password, 10),
-        email,
-        role: 0,
-      });
-      Users.update(UsersUpdate);
+  async userAuth(req, res) {
+    try {
+      const { email, authNumber } = req.body;
+      let Userscheck = await Auth.findOne().where("email").equals(email);
+      if (!Userscheck) return res.status(400).json({ error: "user not Exist" });
+      else {
+        if (Userscheck.verifyNumber == authNumber) {
+          userService.verify(email);
+        } else return res.send("wrong authNumber");
+      }
+      return res.json("verified");
+    } catch (err) {
+      res.status(500).send({ err: err, message: "user authentication failed" });
     }
-    return res.json("Updated");
   },
-  async remove(req, res) {
+  async deleteUser(req, res) {
     const { email } = req.body;
-
-    let Userscheck = await Users.findOne().where("email").equals(email);
-    if (!Userscheck) return res.status(400).json({ error: "wrong email" });
-    else Users.remove(Userscheck).then(() => {});
-    return res.json("Deleted");
+    if (!userService.remove(email))
+      return res.status(400).json({ error: "wrong email" });
+    else return res.json("Deleted");
   },
   async login(req, res) {
     const { email, password } = req.body;
-    let Userscheck = await Users.findOne().where("email").equals(email);
-    const match = compareSync(password, Userscheck.password);
     let token = {};
+    const Userscheck = await Users.findOne().where("email").equals(email);
+    if (!Userscheck) return res.json({ error: "user not found" });
+    if (!Userscheck.verfield) return res.json({ error: "user not allowed" });
+    const match = await bcrypt.compare(password, Userscheck.password);
+
     if (!match) return res.json({ error: "wrong Usersname or password" });
     else {
       token = sign(
         { id: Userscheck._id },
-        "jwtSecret",
+        secretKey.secretKey,
         {
           expiresIn: "7 days",
         },
@@ -72,7 +76,7 @@ const UsersController = {
     const { email } = req.body;
     const token = sign(
       { id: email },
-      "jwtSecret",
+      secretKey.secretKey,
       {
         expiresIn: "7 days",
       },
@@ -87,11 +91,13 @@ const UsersController = {
         .status(401)
         .send({ auth: false, message: "No token provided." });
 
-    verify(token, process.env.JWTSECRET, function (err, decoded) {
-      if (err)
+    verify(token, secretKey.secretKey, function (err, decoded) {
+      if (err) {
+        console.log(err);
         return res
           .status(500)
           .send({ auth: false, message: "Failed to authenticate token." });
+      }
 
       req.UsersId = decoded.id;
       next();

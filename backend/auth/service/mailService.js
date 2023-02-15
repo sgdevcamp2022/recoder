@@ -1,29 +1,56 @@
-import { createTransport } from "nodemailer";
+import nodemailer from "nodemailer";
+import mailConfig from "../config/mail-config.json" assert { type: "json" };
+import ejs from "ejs";
+import path from "path";
+const __dirname = path.resolve();
 
-export async function mailService(req, res) {
-  const transporter = createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: "email",
-      pass: "pass",
-    },
-    tls: { rejectUnauthorized: false },
-  });
+const MailService = {
+  async sendMail(toEmail, authNumber) {
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      prot: 587,
+      host: "smtp.gmlail.com",
+      secure: false,
+      requireTLS: true,
+      auth: {
+        user: mailConfig.user,
+        pass: mailConfig.pass,
+      },
+    });
 
-  const mailOptions = {
-    from: "email",
-    to: req.body.email,
-    subject: "subject",
-    text: "text",
-  };
+    ejs.renderFile(
+      __dirname + "/service/template.ejs",
+      { authNumber },
+      (err, data) => {
+        if (err) {
+          throw err;
+        } else {
+          var mailOptions = {
+            from: mailConfig.user,
+            to: toEmail,
+            subject: "[Comeet] 인증 이메일 입니다",
+            text:
+              "<a href>" +
+              mailConfig.host +
+              mailConfig.user +
+              "?" +
+              authNumber +
+              "</a>",
+            html: data,
+          };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      res.json(error);
-    } else {
-      res.json("send email: " + info.response);
-    }
-  });
-}
+          transporter.sendMail(mailOptions, function (err, info) {
+            if (err) {
+              console.log(err);
+              throw err;
+            } else {
+              console.log("Email sent: " + info.response);
+            }
+          });
+        }
+      }
+    );
+  },
+};
+
+export default MailService;
