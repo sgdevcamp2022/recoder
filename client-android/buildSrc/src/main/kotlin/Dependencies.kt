@@ -99,6 +99,7 @@ object Libraries {
 
 	private const val RETROFIT = "com.squareup.retrofit2:retrofit:${Versions.RETROFIT}"
 	private const val RETROFIT_CONVERTER = "com.squareup.retrofit2:converter-gson:${Versions.RETROFIT}"
+	private const val RETROFIT_SCALARS_CONVERTER = "com.squareup.retrofit2:converter-scalars:${Versions.RETROFIT}"
 	private const val OKHTTP3 = "com.squareup.okhttp3:okhttp:${Versions.OKHTTP}"
 	private const val OKHTTP3_LOGGING_INTERCEPTOR = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
 
@@ -203,6 +204,7 @@ object Libraries {
 		OKHTTP3_LOGGING_INTERCEPTOR,
 		RETROFIT,
 		RETROFIT_CONVERTER,
+		RETROFIT_SCALARS_CONVERTER,
 		TIMBER,
 	)
 	val DOMAIN_LIBRARIES = arrayListOf(
