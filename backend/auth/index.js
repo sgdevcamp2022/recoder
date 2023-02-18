@@ -2,10 +2,13 @@ import express from "express";
 import router from "./controller/index.js";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
+import kakaoRouter from "./controller/kakaoController.js";
 
 const app = express();
 app.use(bodyParser.json());
 app.use("/", router);
+app.use("/auth", kakaoRouter);
+
 const PORT = process.env.PORT || 8001;
 
 app.listen(PORT, async () => {
