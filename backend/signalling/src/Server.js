@@ -154,9 +154,10 @@ function startServer() {
       if (!roomList.has(socket.room_id)) return;
 
       log.debug('setHost', socket.id);
-      roomList.get(socket.room_id).setHost = socket.id;
+      roomList.get(socket.room_id).setHost(socket.id);
 
-      roomList.get(socket.room_id).broadCast(data.peer_id, 'setHost', data);
+      const resJson = roomList.get(socket.room_id).getPeers().get(socket.id)?.peer_info;
+      roomList.get(socket.room_id).broadCast(socket.id, 'setHost', resJson);
       callback('Successfully setHost');
     });
 
@@ -166,7 +167,7 @@ function startServer() {
       log.debug('accessRequest', socket.id);
 
       const host = roomList.get(socket.room_id).getHost();
-      roomList.get(socket.room_id).snedTo(host, 'accessReqest', peer_info);
+      roomList.get(socket.room_id).sendTo(host, 'accessReqest', peer_info);
       callback('Successfully request access');
     });
 
@@ -178,7 +179,7 @@ function startServer() {
       log.debug('accessResponse', data);
 
       if (socket.id != host) return;
-      roomList.get(socket.room_id).snedTo(peer_info.peer_id, 'permitResponse', access);
+      roomList.get(socket.room_id).sendTo(peer_info.peer_id, 'permitResponse', access);
       callback('Successfully response access');
     });
 
@@ -220,7 +221,7 @@ function startServer() {
     });
 
     socket.on('join', (data, cb) => {
-      socket.room_id = data.peer_info.room_id;
+      // socket.room_id = data.peer_info.room_id;
 
       if (!roomList.has(socket.room_id)) {
         return cb({

@@ -146,4 +146,8 @@ export default class Peer {
   removeConsumer(consumer_id) {
     this.consumers.delete(consumer_id);
   }
+
+  getPeerInfo() {
+    return this.peer_info;
+  }
 }
