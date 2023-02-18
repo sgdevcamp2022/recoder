@@ -116,24 +116,10 @@ export default class Room {
   toJson() {
     let peerList = [];
     this.peers.forEach((peer) => {
-      const {
-        id,
-        peer_info,
-        peer_name,
-        peer_audio,
-        peer_video,
-        peer_hand,
-        transports,
-        consumers,
-        producers
-      } = peer;
+      const { id, peer_info, transports, consumers, producers } = peer;
       resPeer.push({
         id,
         peer_info,
-        peer_name,
-        peer_audio,
-        peer_video,
-        peer_hand,
         transports,
         consumers,
         producers
