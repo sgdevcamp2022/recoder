@@ -11,6 +11,7 @@ export default class Room {
     this.audioLevelObserverEnabled = true;
     this.audioLastUpdateTime = 0;
     this.io = io;
+    this.host = null;
     this.peers = new Map();
     this.createTheRouter();
   }
@@ -32,8 +33,23 @@ export default class Room {
       );
   }
 
-  // Audio Level
+  setHost(hostId) {
+    this.host = hostId;
+  }
 
+  getHost() {
+    return this.host;
+  }
+
+  isExist(socket_id) {
+    let isExist = false;
+    this.peers.forEach((peer) => {
+      if (peer.id == socket_id) isExist = true;
+    });
+    return isExist;
+  }
+
+  // Audio Level
   async startAudioLevelObservation(router) {
     log.debug('Start audioLevelObserver for signaling active speaker...');
 

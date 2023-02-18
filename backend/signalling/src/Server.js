@@ -150,6 +150,38 @@ function startServer() {
       }
     });
 
+    socket.on('setHost', async (callback) => {
+      if (!roomList.has(socket.room_id)) return;
+
+      log.debug('setHost', socket.id);
+      roomList.get(socket.room_id).setHost = socket.id;
+
+      roomList.get(socket.room_id).broadCast(data.peer_id, 'setHost', data);
+      callback('Successfully setHost');
+    });
+
+    socket.on('accessReq', async (peer_info, callback) => {
+      if (!roomList.has(socket.room_id)) return;
+
+      log.debug('accessRequest', socket.id);
+
+      const host = roomList.get(socket.room_id).getHost();
+      roomList.get(socket.room_id).snedTo(host, 'accessReqest', peer_info);
+      callback('Successfully request access');
+    });
+
+    socket.on('accessRes', async (data, callback) => {
+      if (!roomList.has(socket.room_id)) return;
+      const host = roomList.get(socket.room_id).getHost();
+      const { access, peer_info } = data;
+
+      log.debug('accessResponse', data);
+
+      if (socket.id != host) return;
+      roomList.get(socket.room_id).snedTo(peer_info.peer_id, 'permitResponse', access);
+      callback('Successfully response access');
+    });
+
     socket.on('getPeerCounts', async ({}, callback) => {
       if (!roomList.has(socket.room_id)) return;
 
@@ -367,6 +399,37 @@ function startServer() {
       log.debug('Exit room', getPeerName());
 
       // close transports
+      await roomList.get(socket.room_id).removePeer(socket.id);
+
+      roomList.get(socket.room_id).broadCast(socket.id, 'removeMe', removeMeData());
+
+      if (roomList.get(socket.room_id).getPeers().size === 0) {
+        roomList.delete(socket.room_id);
+      }
+
+      socket.room_id = null;
+
+      callback('Successfully exited room');
+    });
+
+    socket.on('exitHost', async (newHost, callback) => {
+      if (!roomList.has(socket.room_id)) {
+        return callback({
+          error: 'Not currently in a room'
+        });
+      }
+      if (!newHost)
+        return callback({
+          error: 'new hostInfo required'
+        });
+      if (!roomList.get(socket.room_id).isExist(newHost.peer_id))
+        return callback({
+          error: 'new host is not Exist in the room'
+        });
+
+      log.debug('Exit room Host', getPeerName());
+
+      roomList.get(socket.room_id).setHost(newHost.peer_id);
       await roomList.get(socket.room_id).removePeer(socket.id);
 
       roomList.get(socket.room_id).broadCast(socket.id, 'removeMe', removeMeData());
