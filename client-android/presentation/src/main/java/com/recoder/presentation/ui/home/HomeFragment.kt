@@ -16,6 +16,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.recoder.presentation.R
 import com.recoder.presentation.databinding.FragmentHomeBinding
+import com.recoder.presentation.ui.meeting.MeetingActivity
 import com.recoder.presentation.ui.util.repeatOnStarted
 import com.recoder.presentation.ui.waiting.WaitingRoomActivity
 import dagger.hilt.android.AndroidEntryPoint

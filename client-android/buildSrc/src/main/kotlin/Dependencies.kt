@@ -89,7 +89,7 @@ object Libraries {
 	private const val NAVIGATION_FRAGMENT_KTX = "androidx.navigation:navigation-fragment-ktx:${Versions.NAV}"
 	private const val NAVIGATION_UI_KTX = "androidx.navigation:navigation-ui-ktx:${Versions.NAV}"
 	private const val NAVIGATION_FRAGMENT_FEATURES = "androidx.navigation:navigation-dynamic-features-fragment:${Versions.NAV}"
-//	private const val NAVIGATION_FRAGMENT_COMPOSE = "androidx.navigation:navigation-compose:${Versions.NAV}"
+	private const val NAVIGATION_COMPOSE = "androidx.navigation:navigation-compose:${Versions.NAV}"
 
 	private const val ROOM_RUNTIME = "androidx.room:room-runtime:${Versions.ROOM}"
 	private const val ROOM_KTX = "androidx.room:room-ktx:${Versions.ROOM}"
@@ -159,6 +159,7 @@ object Libraries {
 		"com.google.accompanist:accompanist-flowlayout:${Versions.COMPOSE_ACCOMPANIST}"
 	private const val COMPOSE_ACCOMPANIST_PLACEHOLDER =
 		"com.google.accompanist:accompanist-placeholder-material:${Versions.COMPOSE_ACCOMPANIST}"
+	private const val HILT_NAV_COMPOSE = "androidx.hilt:hilt-navigation-compose:${Versions.HILT_WORK}"
 
 	private const val SHIMMER = "com.facebook.shimmer:shimmer:${Versions.SHIMMER}"
 	private const val LOTTIE = "com.airbnb.android:lottie:${Versions.LOTTIE}"
@@ -191,6 +192,8 @@ object Libraries {
 		NAVIGATION_FRAGMENT_KTX,
 		NAVIGATION_UI,
 		NAVIGATION_UI_KTX,
+		NAVIGATION_COMPOSE,
+		HILT_NAV_COMPOSE,
 	)
 	val DATA_LIBRARIES = arrayListOf(
 		COROUTINE_CORE,

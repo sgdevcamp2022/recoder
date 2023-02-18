@@ -8,6 +8,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
         <activity
+            android:name=".ui.meeting.MeetingActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.waiting.WaitingRoomActivity"
             android:exported="true" />
         <activity
