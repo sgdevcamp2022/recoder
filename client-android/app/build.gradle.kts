@@ -60,6 +60,8 @@ dependencies {
     implementation(project(":presentation"))
     implementation(project(":data"))
 
+    implementation("io.github.haiyangwu:mediasoup-client:3.4.0")
+
     kapt(Kapt.APP_LIBRARIES)
     implementation(Libraries.APP_LIBRARIES)
 }

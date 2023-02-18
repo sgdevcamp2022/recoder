@@ -11,9 +11,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.recoder.presentation.R
 import com.recoder.presentation.databinding.FragmentHomeBottomSheetBinding
+import com.recoder.presentation.ui.meeting.MeetingActivity
 import com.recoder.presentation.ui.util.repeatOnStarted
 import com.recoder.presentation.ui.waiting.WaitingRoomActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -42,7 +46,7 @@ class HomeBottomSheetFragment : BottomSheetDialogFragment() {
         repeatOnStarted {
             viewModel.eventFlow.collect { event ->
                 when (event) {
-                    HomeBottomSheetEvent.NavigateToWaitingRoom -> moveToWaitingRoom()
+                    HomeBottomSheetEvent.NavigateToWaitingRoom -> moveToMeetingRoom()
                     HomeBottomSheetEvent.ShowLinkDialog -> showLinkDialog()
                     is HomeBottomSheetEvent.ShowSnackBar -> showSnackBar(event.msg)
                 }
@@ -59,6 +63,14 @@ class HomeBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun moveToWaitingRoom() {
         startWaitingRoomActivity()
+    }
+
+    private fun moveToMeetingRoom() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val intent = Intent(requireContext(), MeetingActivity::class.java)
+            intent.putExtra("link", viewModel.createdCode)
+            startActivity(intent)
+        }
     }
 
     private fun startWaitingRoomActivity() {
