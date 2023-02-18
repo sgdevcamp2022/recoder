@@ -67,7 +67,6 @@ class HomeFragment : Fragment() {
         val intent = Intent(requireContext(), WaitingRoomActivity::class.java)
         startActivity(intent)
     }
-
     private fun showSnackBar(text: String) =
         Snackbar.make(binding.root, text, Snackbar.LENGTH_SHORT).show()
 }
