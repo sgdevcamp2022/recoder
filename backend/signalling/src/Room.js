@@ -152,7 +152,6 @@ export default class Room {
       peer.producers.forEach((producer) => {
         producerList.push({
           producer_id: producer.id,
-          peer_name: peer.peer_name,
           peer_info: peer.peer_info,
           type: producer.appData.mediaType
         });
