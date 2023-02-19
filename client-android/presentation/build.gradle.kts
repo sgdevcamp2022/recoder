@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
+    id("kotlinx-serialization")
 }
 
 android {
@@ -81,6 +82,8 @@ dependencies {
     implementation("androidx.camera:camera-extensions:${camerax_version}")
     debugImplementation("androidx.compose.ui:ui-tooling:${rootProject.extra["compose_ui_version"]}")
     debugImplementation("androidx.compose.ui:ui-test-manifest:${rootProject.extra["compose_ui_version"]}")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 
     kapt(Kapt.VIEW_LIBRARIES)
     androidTestImplementation(AndroidTestImpl.VIEW_LIBRARIES)

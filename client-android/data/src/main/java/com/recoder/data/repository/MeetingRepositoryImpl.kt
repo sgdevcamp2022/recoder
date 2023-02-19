@@ -6,9 +6,14 @@ import com.recoder.domain.repository.MeetingRepository
 import javax.inject.Inject
 
 class MeetingRepositoryImpl @Inject constructor(
-    private val api : MeetingApi
+    private val api: MeetingApi
 ) : MeetingRepository {
 
-    override suspend fun createLink() = handleApi { api.createLink() }
+    override suspend fun createLink() =
+        runCatching {
+            handleApi {
+                api.createLink()
+            }.getOrThrow().link
+        }
 
 }

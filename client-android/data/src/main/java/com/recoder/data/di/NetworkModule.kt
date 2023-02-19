@@ -1,12 +1,9 @@
 package com.recoder.data.di
 
-import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -15,12 +12,14 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
     private const val BASE_URL = "http://10.0.2.2:5000/"
+//    private const val BASE_URL = "http://3.36.88.215:5000/"
 
     @Singleton
     @Provides
@@ -32,7 +31,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor
+        loggingInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .connectTimeout(5, TimeUnit.SECONDS)

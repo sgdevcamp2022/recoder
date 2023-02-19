@@ -11,24 +11,24 @@ import timber.log.Timber
 
 class ProducerListener(socket: Socket) : RecvTransport.Listener {
 
-	private val _socket : Socket = socket
+    private val _socket: Socket = socket
 
-	override fun onConnect(transport: Transport?, dtlsParameters: String?) {
-		_socket.runCatching {
-			this.emit("connectTransport",
-				JSONObject(
-					mapOf(
-						"transport_id" to (transport?.id ?: ""),
-						"dtlsParameters" to toJsonObject(dtlsParameters),
-					)
-				),
-				Ack { Timber.d((it[0] as JSONObject).toString()) }
-			)
-		}.timber("consumer OnConnect")
-	}
+    override fun onConnect(transport: Transport?, dtlsParameters: String?) {
+        _socket.runCatching {
+            this.emit("connectTransport",
+                JSONObject(
+                    mapOf(
+                        "transport_id" to (transport?.id ?: ""),
+                        "dtlsParameters" to toJsonObject(dtlsParameters),
+                    )
+                ),
+                Ack { Timber.d(it[0].toString()) }
+            )
+        }.timber("consumer OnConnect")
+    }
 
-	override fun onConnectionStateChange(
-		transport: Transport?,
-		connectionState: String?,
-	) = Unit
+    override fun onConnectionStateChange(
+        transport: Transport?,
+        connectionState: String?,
+    ) = Unit
 }
