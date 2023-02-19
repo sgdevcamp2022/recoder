@@ -11,6 +11,7 @@ export default class Room {
     this.audioLevelObserverEnabled = true;
     this.audioLastUpdateTime = 0;
     this.io = io;
+    this.host = null;
     this.peers = new Map();
     this.createTheRouter();
   }
@@ -32,8 +33,23 @@ export default class Room {
       );
   }
 
-  // Audio Level
+  setHost(hostId) {
+    this.host = hostId;
+  }
 
+  getHost() {
+    return this.host;
+  }
+
+  isExist(socket_id) {
+    let isExist = false;
+    this.peers.forEach((peer) => {
+      if (peer.id == socket_id) isExist = true;
+    });
+    return isExist;
+  }
+
+  // Audio Level
   async startAudioLevelObservation(router) {
     log.debug('Start audioLevelObserver for signaling active speaker...');
 
@@ -100,24 +116,10 @@ export default class Room {
   toJson() {
     let peerList = [];
     this.peers.forEach((peer) => {
-      const {
+      const { id, peer_info, transports, consumers, producers } = peer;
+      peerList.push({
         id,
         peer_info,
-        peer_name,
-        peer_audio,
-        peer_video,
-        peer_hand,
-        transports,
-        consumers,
-        producers
-      } = peer;
-      resPeer.push({
-        id,
-        peer_info,
-        peer_name,
-        peer_audio,
-        peer_video,
-        peer_hand,
         transports,
         consumers,
         producers
@@ -136,7 +138,6 @@ export default class Room {
       peer.producers.forEach((producer) => {
         producerList.push({
           producer_id: producer.id,
-          peer_name: peer.peer_name,
           peer_info: peer.peer_info,
           type: producer.appData.mediaType
         });
