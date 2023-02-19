@@ -1,3 +1,7 @@
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 const RoomInfoBox = styled.div`
@@ -26,13 +30,23 @@ const RoomCode = styled.div`
 `;
 
 export const RoomInfo = () => {
+  dayjs.locale("ko");
+  const roomId = useSelector((state: any) => state.room.roomId);
+  const [time, setTime] = useState(dayjs().format("h:mm A"));
+
+  useEffect(() => {
+    setInterval(() => {
+      setTime(dayjs().format("h:mm A"));
+    }, 10000);
+  });
+
   return (
     <RoomInfoBox>
       <TimeSpan>
-        2:53 오후
+        {time}
         <Seperator />
       </TimeSpan>
-      <RoomCode>asy-xity-brp</RoomCode>
+      <RoomCode>{roomId}</RoomCode>
     </RoomInfoBox>
   );
 };

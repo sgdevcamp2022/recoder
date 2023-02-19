@@ -1,8 +1,11 @@
 # Web
 
-## 의존성
+## 실행
 
-- react
-- storybook
+cd client-web
 
-## fighting
+yarn install
+
+yarn start
+
+http://localhost:3000/ 접속
