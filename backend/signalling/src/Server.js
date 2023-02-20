@@ -221,6 +221,7 @@ function startServer() {
     });
 
     socket.on('join', (data, cb) => {
+      data = JSON.parse(data);
       socket.room_id = data.room_id;
 
       if (!roomList.has(socket.room_id)) {
