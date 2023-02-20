@@ -1,4 +1,7 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { useGetLinkQuery } from "../../../redux/apis/linkAPI";
 
 const ButtonBox = styled.div`
   display: flex;
@@ -99,10 +102,25 @@ const JoinInput = styled.input`
 `;
 
 export const MeetingButtons = () => {
+  const [roomId, setRoomId] = useState<string>("");
+  const { data, isFetching, isLoading } = useGetLinkQuery({});
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRoomId(e.target.value);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      window.location.href = `/${roomId}`;
+    }
+  };
+
   return (
     <ButtonBox>
       <HostButtonBox>
-        <HostButton>새 회의</HostButton>
+        <HostButton>
+          <Link to={data}>새 회의</Link>
+        </HostButton>
       </HostButtonBox>
       <JoinButtonBox>
         <JoinLabel>
@@ -110,7 +128,13 @@ export const MeetingButtons = () => {
             <LeftSpan />
             <RightSpan />
           </SpanBox>
-          <JoinInput type="text" placeholder="코드 또는 링크 입력" />
+          <JoinInput
+            type="text"
+            placeholder="코드 또는 링크 입력"
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            value={roomId}
+          />
         </JoinLabel>
       </JoinButtonBox>
     </ButtonBox>

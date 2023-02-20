@@ -1,19 +1,19 @@
+import { roomSlice } from "./slices/roomSlice";
 import { linkAPI } from "./apis/linkAPI";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { testAPI } from "./apis/testAPI";
 import testSlice from "./slices/testSlice";
 
 const rootReducer = combineReducers({
   test: testSlice.reducer,
-  [testAPI.reducerPath]: testAPI.reducer,
+  room: roomSlice.reducer,
   [linkAPI.reducerPath]: linkAPI.reducer,
 });
 
 const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(testAPI.middleware, linkAPI.middleware),
+    getDefaultMiddleware().concat(linkAPI.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
