@@ -221,7 +221,7 @@ function startServer() {
     });
 
     socket.on('join', (data, cb) => {
-      socket.room_id = data.peer_info.room_id;
+      socket.room_id = data.room_id;
 
       if (!roomList.has(socket.room_id)) {
         return cb({
