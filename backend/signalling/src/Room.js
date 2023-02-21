@@ -117,12 +117,27 @@ export default class Room {
     let peerList = [];
     this.peers.forEach((peer) => {
       const { id, peer_info, transports, consumers, producers } = peer;
+      const transportList = [],
+        consumeList = [],
+        producerList = [];
+      transports.forEach((value, key) => {
+        const transportInfo = { transportId: key, transport: value };
+        transportList.push(transportInfo);
+      });
+      consumers.forEach((value, key) => {
+        const consumerInfo = { consumerId: key, consumer: value };
+        consumeList.push(consumerInfo);
+      });
+      producers.forEach((value, key) => {
+        const producerInfo = { producerId: key, producer: value };
+        producerList.push(producerInfo);
+      });
       peerList.push({
         id,
         peer_info,
-        transports,
-        consumers,
-        producers
+        transports: transportList,
+        consumers: consumeList,
+        producers: producerList
       });
     });
 
