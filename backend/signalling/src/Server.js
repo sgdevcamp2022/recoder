@@ -232,6 +232,8 @@ function startServer() {
 
       log.debug('User joined', data);
       roomList.get(socket.room_id).addPeer(new Peer(socket.id, data));
+      roomList.get(socket.room_id).broadCast(socket.id, 'newMemberJoined', data);
+
       cb(roomList.get(socket.room_id).toJson());
     });
 
