@@ -386,14 +386,6 @@ function startServer() {
       }
     });
 
-    socket.on('disconnect', () => {
-      if (!roomList.has(socket.room_id)) return;
-
-      log.debug('Disconnect', getPeerName());
-      roomList.get(socket.room_id).removePeer(socket.id);
-      roomList.get(socket.room_id).broadCast(socket.id, 'removeMe', removeMeData());
-    });
-
     socket.on('exitRoom', async (_, callback) => {
       if (!roomList.has(socket.room_id)) {
         return callback({
