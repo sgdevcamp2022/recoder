@@ -222,6 +222,7 @@ function startServer() {
 
     socket.on('join', (data, cb) => {
       data = JSON.parse(data);
+      console.log(data);
       socket.room_id = data.room_id;
 
       if (!roomList.has(socket.room_id)) {
@@ -361,6 +362,7 @@ function startServer() {
 
       // update video, audio OFF
       roomList.get(socket.room_id).getPeers().get(socket.id).updatePeerInfo(data);
+      roomList.get(socket.room_id).broadCast(socket.id, 'updatePeerInfo', data);
       roomList.get(socket.room_id).closeProducer(socket.id, data.producer_id);
     });
 
@@ -384,14 +386,6 @@ function startServer() {
       } else {
         roomList.get(socket.room_id).sendTo(data.to_peer_id, 'message', data);
       }
-    });
-
-    socket.on('disconnect', () => {
-      if (!roomList.has(socket.room_id)) return;
-
-      log.debug('Disconnect', getPeerName());
-      roomList.get(socket.room_id).removePeer(socket.id);
-      roomList.get(socket.room_id).broadCast(socket.id, 'removeMe', removeMeData());
     });
 
     socket.on('exitRoom', async (_, callback) => {
@@ -434,6 +428,10 @@ function startServer() {
       log.debug('Exit room Host', getPeerName());
 
       roomList.get(socket.room_id).setHost(newHost.peer_id);
+      const resJson = roomList.get(socket.room_id).getPeers().get(socket.id)?.peer_info;
+      roomList.get(socket.room_id).broadCast(socket.id, 'setHost', resJson);
+      log.debug('setHost', socket.id);
+
       await roomList.get(socket.room_id).removePeer(socket.id);
 
       roomList.get(socket.room_id).broadCast(socket.id, 'removeMe', removeMeData());

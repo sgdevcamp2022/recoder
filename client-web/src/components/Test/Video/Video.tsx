@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export const Video = ({ stream }: any) => {
+export const Video = ({ stream, isSound }: any) => {
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -14,6 +14,7 @@ export const Video = ({ stream }: any) => {
         height: 240,
         margin: 5,
         backgroundColor: "black",
+        display: isSound ? "none" : "inline-block",
       }}
       ref={ref}
       autoPlay

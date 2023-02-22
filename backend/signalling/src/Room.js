@@ -116,27 +116,14 @@ export default class Room {
   toJson() {
     let peerList = [];
     this.peers.forEach((peer) => {
-      const { id, peer_info, transports, consumers, producers } = peer;
-      const transportList = [],
-        consumeList = [],
-        producerList = [];
-      transports.forEach((value, key) => {
-        const transportInfo = { transportId: key, transport: value };
-        transportList.push(transportInfo);
-      });
-      consumers.forEach((value, key) => {
-        const consumerInfo = { consumerId: key, consumer: value };
-        consumeList.push(consumerInfo);
-      });
-      producers.forEach((value, key) => {
-        const producerInfo = { producerId: key, producer: value };
-        producerList.push(producerInfo);
+      const { id, peer_info, producers } = peer;
+      const producerList = [];
+      producers.forEach((key, value) => {
+        producerList.push(value);
       });
       peerList.push({
         id,
         peer_info,
-        transports: transportList,
-        consumers: consumeList,
         producers: producerList
       });
     });
@@ -152,6 +139,7 @@ export default class Room {
     this.peers.forEach((peer) => {
       peer.producers.forEach((producer) => {
         producerList.push({
+          id: peer.id,
           producer_id: producer.id,
           peer_info: peer.peer_info,
           type: producer.appData.mediaType
@@ -227,7 +215,7 @@ export default class Room {
         this.broadCast(socket_id, 'newProducers', [
           {
             producer_id: producer.id,
-            producer_socket_id: socket_id,
+            id: socket_id,
             peer_name: this.peers.get(socket_id).peer_name,
             peer_info: this.peers.get(socket_id).peer_info,
             type: type
