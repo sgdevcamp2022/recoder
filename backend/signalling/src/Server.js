@@ -426,6 +426,10 @@ function startServer() {
       log.debug('Exit room Host', getPeerName());
 
       roomList.get(socket.room_id).setHost(newHost.peer_id);
+      const resJson = roomList.get(socket.room_id).getPeers().get(socket.id)?.peer_info;
+      roomList.get(socket.room_id).broadCast(socket.id, 'setHost', resJson);
+      log.debug('setHost', socket.id);
+
       await roomList.get(socket.room_id).removePeer(socket.id);
 
       roomList.get(socket.room_id).broadCast(socket.id, 'removeMe', removeMeData());
