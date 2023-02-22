@@ -116,27 +116,14 @@ export default class Room {
   toJson() {
     let peerList = [];
     this.peers.forEach((peer) => {
-      const { id, peer_info, transports, consumers, producers } = peer;
-      const transportList = [],
-        consumeList = [],
-        producerList = [];
-      transports.forEach((value, key) => {
-        const transportInfo = { transportId: key, transport: value };
-        transportList.push(transportInfo);
-      });
-      consumers.forEach((value, key) => {
-        const consumerInfo = { consumerId: key, consumer: value };
-        consumeList.push(consumerInfo);
-      });
-      producers.forEach((value, key) => {
-        const producerInfo = { producerId: key, producer: value };
-        producerList.push(producerInfo);
+      const { id, peer_info, producers } = peer;
+      const producerList = [];
+      producers.forEach((key, value) => {
+        producerList.push(value);
       });
       peerList.push({
         id,
         peer_info,
-        transports: transportList,
-        consumers: consumeList,
         producers: producerList
       });
     });
