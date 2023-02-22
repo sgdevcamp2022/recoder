@@ -222,6 +222,7 @@ function startServer() {
 
     socket.on('join', (data, cb) => {
       data = JSON.parse(data);
+      console.log(data);
       socket.room_id = data.room_id;
 
       if (!roomList.has(socket.room_id)) {
@@ -361,6 +362,7 @@ function startServer() {
 
       // update video, audio OFF
       roomList.get(socket.room_id).getPeers().get(socket.id).updatePeerInfo(data);
+      roomList.get(socket.room_id).broadCast(socket.id, 'updatePeerInfo', data);
       roomList.get(socket.room_id).closeProducer(socket.id, data.producer_id);
     });
 
