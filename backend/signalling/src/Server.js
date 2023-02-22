@@ -388,26 +388,17 @@ function startServer() {
       }
     });
 
-    socket.on('exitRoom', async (_, callback) => {
-      if (!roomList.has(socket.room_id)) {
-        return callback({
-          error: 'Not currently in a room'
-        });
-      }
-      log.debug('Exit room', getPeerName());
+    socket.on('disconnect', () => {
+      if (!roomList.has(socket.room_id)) return;
 
-      // close transports
-      await roomList.get(socket.room_id).removePeer(socket.id);
-
+      log.debug('Disconnect', getPeerName());
+      roomList.get(socket.room_id).removePeer(socket.id);
       roomList.get(socket.room_id).broadCast(socket.id, 'removeMe', removeMeData());
 
       if (roomList.get(socket.room_id).getPeers().size === 0) {
         roomList.delete(socket.room_id);
       }
-
       socket.room_id = null;
-
-      callback('Successfully exited room');
     });
 
     socket.on('exitHost', async (newHost, callback) => {
