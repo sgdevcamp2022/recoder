@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Device } from "mediasoup-client";
 import { Video } from "../../components/Meet/Video";
 import {
@@ -27,7 +27,6 @@ import {
   TimeText,
   VideoBox,
 } from "../../components/Meet/MeetWrapper";
-import { ReactComponent as svg } from "../../assets/meetings/svgexport-1.svg";
 import { Message } from "../../components/Meet/Message";
 
 export const Test = () => {
@@ -44,12 +43,11 @@ export const Test = () => {
   const [isHandOn, setIsHandOn] = useState<boolean>(false);
   const [isMessageOn, setIsMessageOn] = useState<boolean>(false);
 
-  const [isInRoom, setIsInRoom] = useState<boolean>(false);
-  const [isBeforeVideo, setIsBeforeVideo] = useState<boolean>(false);
-  const [isBeforeAudio, setIsBeforeAudio] = useState<boolean>(false);
-
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<any[]>([]);
+
+  const [videoSize, setVideoSize] = useState<any>({ width: 0, height: 0 });
+  const videoBoxRef = useRef<HTMLDivElement>(null);
 
   const socketRef = useRef<any>();
   const rtpCapabilitiesRef = useRef<any>();
@@ -69,8 +67,6 @@ export const Test = () => {
   const localScreenStreamRef = useRef<any>();
   const localWebcamStreamRef = useRef<any>();
   const localAudioStreamRef = useRef<any>();
-  const localScreenVideoRef = useRef<any>();
-  const localWebcamVideoRef = useRef<any>();
 
   const peerMapRef = useRef<Map<any, any>>(new Map());
 
@@ -84,14 +80,6 @@ export const Test = () => {
     peer_hand: isHandOn,
   };
 
-  const beforeVideo = () => {
-    setIsBeforeVideo(!isBeforeVideo);
-  };
-
-  const beforeAudio = () => {
-    setIsBeforeAudio(!isBeforeAudio);
-  };
-
   const joinRoom = async () => {
     await new Promise(async (resolve) => {
       await socketRef.current.emit(
@@ -100,48 +88,49 @@ export const Test = () => {
         async (response: any) => {
           const isHost = response?.room_id;
 
-          await socketRef.current.emit(
-            "join",
-            JSON.stringify({
-              peer_info: peer_info,
-              room_id: roomId,
-              id: socketRef.current.id,
-            }),
-            (response: any) => {
-              console.log("방 참가 인원");
-              for (let peer of response.peers) {
-                if (peer.id === socketRef.current.id) continue;
+          await new Promise(async (resolve) => {
+            await socketRef.current.emit(
+              "join",
+              JSON.stringify({
+                peer_info: peer_info,
+                room_id: roomId,
+                id: socketRef.current.id,
+              }),
+              (response: any) => {
+                console.log("방 참가 인원", response);
+                for (let peer of response.peers) {
+                  console.log(peer);
+                  const peer_info = peer.peer_info;
 
-                console.log(peer);
-
-                const peer_info = peer.peer_info;
-
-                peerMapRef.current.set(peer.id, {
-                  peer_name: peer_info.peer_name,
-                  video: peer_info.peer_video,
-                  video_producer: undefined,
-                  video_consumer: undefined,
-                  screen: peer_info.peer_screen,
-                  screen_producer: undefined,
-                  screen_consumer: undefined,
-                  audio: peer_info.peer_audio,
-                  audio_producer: undefined,
-                  audio_consumer: undefined,
-                  hand: peer_info.peer_hand,
-                });
-
-                setNewUserStream((prev) => {
-                  return new Map(prev).set(peer.id, {
+                  peerMapRef.current.set(peer.id, {
                     peer_name: peer_info.peer_name,
-                    video_stream: undefined,
-                    screen_stream: undefined,
-                    audio_stream: undefined,
+                    video: peer_info.peer_video,
+                    video_producer: undefined,
+                    video_consumer: undefined,
+                    screen: peer_info.peer_screen,
+                    screen_producer: undefined,
+                    screen_consumer: undefined,
+                    audio: peer_info.peer_audio,
+                    audio_producer: undefined,
+                    audio_consumer: undefined,
                     hand: peer_info.peer_hand,
                   });
-                });
+
+                  setNewUserStream((prev) => {
+                    return new Map(prev).set(peer.id, {
+                      peer_name: peer_info.peer_name,
+                      video_stream: undefined,
+                      screen_stream: undefined,
+                      audio_stream: undefined,
+                      hand: peer_info.peer_hand,
+                    });
+                  });
+                }
+
+                resolve("");
               }
-            }
-          );
+            );
+          });
 
           if (isHost) {
             await socketRef.current.emit("setHost", (response: any) => {
@@ -175,21 +164,9 @@ export const Test = () => {
         }
       );
     });
-
-    setIsInRoom(true);
-    if (isBeforeAudio) {
-      handleAudio();
-    }
-    if (isBeforeVideo) {
-      handleWebcamVideo();
-    }
   };
 
   const exitRoom = async () => {
-    socketRef.current.emit("exitRoom", {}, (response: any) => {
-      console.log("방 나가기 완료", response);
-    });
-
     // root 주소로 이동
     window.location.href = "/";
   };
@@ -241,12 +218,16 @@ export const Test = () => {
         video: true,
       });
 
-      localWebcamVideoRef.current.srcObject = localWebcamStreamRef.current;
+      setIsVideoOn(true);
+
+      const newMap = new Map(newUserStream);
+      newMap.get(socketRef.current.id).video_stream =
+        localWebcamStreamRef.current;
+      setNewUserStream(newMap);
 
       await produce(localWebcamStreamRef.current, "video");
 
       updateMyInfo("video", true);
-      setIsVideoOn(true);
     } else {
       socketRef.current.emit("producerClosed", {
         id: socketRef.current.id,
@@ -257,7 +238,10 @@ export const Test = () => {
       });
 
       localWebcamStreamRef.current.getVideoTracks()[0].stop();
-      localWebcamVideoRef.current.srcObject = null;
+
+      const newMap = new Map(newUserStream);
+      newMap.get(socketRef.current.id).video_stream = undefined;
+      setNewUserStream(newMap);
 
       setIsVideoOn(false);
     }
@@ -270,7 +254,10 @@ export const Test = () => {
           video: true,
         });
 
-      localScreenVideoRef.current.srcObject = localScreenStreamRef.current;
+      const newMap = new Map(newUserStream);
+      newMap.get(socketRef.current.id).screen_stream =
+        localScreenStreamRef.current;
+      setNewUserStream(newMap);
 
       await produce(localScreenStreamRef.current, "screen");
 
@@ -286,7 +273,10 @@ export const Test = () => {
       });
 
       localScreenStreamRef.current.getVideoTracks()[0].stop();
-      localScreenVideoRef.current.srcObject = null;
+
+      const newMap = new Map(newUserStream);
+      newMap.get(socketRef.current.id).screen_stream = undefined;
+      setNewUserStream(newMap);
 
       setIsScreenOn(false);
     }
@@ -297,11 +287,16 @@ export const Test = () => {
       localAudioStreamRef.current = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
+      setIsAudioOn(true);
+
+      const newMap = new Map(newUserStream);
+      newMap.get(socketRef.current.id).audio_stream =
+        localAudioStreamRef.current;
+      setNewUserStream(newMap);
 
       await produce(localAudioStreamRef.current, "audio");
 
       updateMyInfo("audio", true);
-      setIsAudioOn(true);
     } else {
       socketRef.current.emit("producerClosed", {
         id: socketRef.current.id,
@@ -313,6 +308,10 @@ export const Test = () => {
 
       localAudioStreamRef.current.getAudioTracks()[0].stop();
 
+      const newMap = new Map(newUserStream);
+      newMap.get(socketRef.current.id).audio_stream = undefined;
+      setNewUserStream(newMap);
+
       setIsAudioOn(false);
     }
   };
@@ -320,9 +319,19 @@ export const Test = () => {
   const handleHand = () => {
     if (!isHandOn) {
       updateMyInfo("hand", true);
+
+      const newMap = new Map(newUserStream);
+      newMap.get(socketRef.current.id).hand = true;
+      setNewUserStream(newMap);
+
       setIsHandOn(true);
     } else {
       updateMyInfo("hand", false);
+
+      const newMap = new Map(newUserStream);
+      newMap.get(socketRef.current.id).hand = false;
+      setNewUserStream(newMap);
+
       setIsHandOn(false);
     }
   };
@@ -435,7 +444,7 @@ export const Test = () => {
     const audioTrack = await stream.getAudioTracks();
 
     if (videoTrack.length !== 0) {
-      const producer = await sendTransportRef.current.produce({
+      await sendTransportRef.current.produce({
         appData: { mediaType: type },
         track: videoTrack[0],
         encodings: [
@@ -507,7 +516,64 @@ export const Test = () => {
     );
   };
 
-  // useEffect()는 첫 렌더링 후 1회 실행 됨.
+  const handleResize = () => {
+    let width = 0;
+    let height = 0;
+
+    if (videoBoxRef.current) {
+      const userStreamArray = Array.from(newUserStream);
+      let newVideoCount = userStreamArray.length;
+
+      userStreamArray.forEach(([key, value]) => {
+        if (value.screen_stream) {
+          newVideoCount++;
+        }
+      });
+
+      const rowCount = Math.floor((newVideoCount + 1) / 2);
+
+      const videoBoxWidth = videoBoxRef.current.offsetWidth;
+      const videoBoxHeight = videoBoxRef.current.offsetHeight;
+
+      if (newVideoCount === 1) {
+        width = videoBoxWidth - 32;
+      } else {
+        width = videoBoxWidth / 2 - 32;
+      }
+      height = videoBoxHeight / rowCount - 16;
+
+      // 너무 가로로 길어지는 것을 방지
+      width = width > height * 1.78 ? height * 1.78 : width;
+      width = width + 32 > videoBoxWidth ? videoBoxWidth - 32 : width;
+
+      // 너무 세로로 길어지는 것을 방지
+      height = height > width / 1.34 ? width / 1.34 : height;
+      height =
+        (height + 16) * rowCount > videoBoxHeight
+          ? videoBoxHeight / rowCount - 16
+          : height;
+    }
+
+    setVideoSize({
+      width: width,
+      height: height,
+    });
+  };
+
+  // isMessageOn이 바뀔 때마다 실행 되는 로직
+  useEffect(() => {
+    handleResize();
+  }, [isMessageOn]);
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [newUserStream]);
+
+  // 첫 렌더링 후 1회 실행 되는 로직들
   useEffect(() => {
     async function myJoinRoom() {
       await joinRoom();
@@ -523,7 +589,6 @@ export const Test = () => {
     myJoinRoom();
 
     socketRef.current.on("newMemberJoined", async (data: any) => {
-      console.log("newMemberJoined", data);
       const peer_info = data.peer_info;
 
       peerMapRef.current.set(data.id, {
@@ -586,7 +651,6 @@ export const Test = () => {
     });
 
     socketRef.current.on("updatePeerInfo", async (data: any) => {
-      console.log("updatePeerInfo", data);
       switch (data.type) {
         case "audio":
           peerMapRef.current.get(data.id).audio = data.status;
@@ -629,24 +693,57 @@ export const Test = () => {
         { peer_name: data.peer_name, peer_msg: data.peer_msg },
       ]);
     });
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      socketRef.current.disconnect();
+    };
   }, []);
 
-  const newRender = () => {
+  const videoRendering = () => {
     const userStreamArray = Array.from(newUserStream);
 
     return userStreamArray.map(([key, value], index) => {
       return (
-        <div key={index}>
-          <br />
-          <div>
-            {value.peer_name} {value.hand ? "🤘" : ""}
-          </div>
-          <Video stream={value.video_stream} />
-          {value.screen_stream && <Video stream={value.screen_stream} />}
-          {value.audio_stream && (
-            <Video stream={value.audio_stream} isSound={true} />
+        <Fragment key={index}>
+          <Video
+            stream={value.video_stream}
+            width={videoSize.width}
+            height={videoSize.height}
+            name={value.peer_name}
+            isAudioOn={value.audio_stream ? true : false}
+            isHand={value.hand}
+            isScreen={false}
+            isSound={false}
+            isMe={value.peer_name === peerName}
+          ></Video>
+          {value.screen_stream && (
+            <Video
+              stream={value.screen_stream}
+              width={videoSize.width}
+              height={videoSize.height}
+              name={value.peer_name}
+              isAudioOn={false}
+              isHand={false}
+              isScreen={true}
+              isSound={false}
+              isMe={value.peer_name === peerName}
+            ></Video>
           )}
-        </div>
+          {value.audio_stream && (
+            <Video
+              stream={value.audio_stream}
+              width={videoSize.width}
+              height={videoSize.height}
+              name={value.peer_name}
+              isAudioOn={false}
+              isHand={false}
+              isScreen={false}
+              isSound={true}
+              isMe={value.peer_name === peerName}
+            ></Video>
+          )}
+        </Fragment>
       );
     });
   };
@@ -654,7 +751,9 @@ export const Test = () => {
   return (
     <MeetBox>
       <MeetContent>
-        <VideoBox></VideoBox>
+        <VideoBox ref={videoBoxRef} isChat={isMessageOn}>
+          {videoRendering()}
+        </VideoBox>
         {isMessageOn ? (
           <MessageBox>
             <MessageTitleBox>
@@ -683,7 +782,7 @@ export const Test = () => {
               <MessageInput
                 rows={1}
                 onChange={handleMessageChange}
-                onKeyDown={handleMessageKeyDown}
+                onKeyPress={handleMessageKeyDown}
                 value={message}
               ></MessageInput>
               <MessageSendButton onClick={handleMessageClick}>
@@ -848,67 +947,5 @@ export const Test = () => {
         </OtherButtonBox>
       </MeetBottomTab>
     </MeetBox>
-    // <>
-    //   <div style={{ display: isInRoom ? "block" : "none" }}>
-    //     <button onClick={handleAudio}>
-    //       소리 공유 {isAudioOn ? "종료하기" : "시작하기"}
-    //     </button>
-    //     <button onClick={handleWebcamVideo}>
-    //       비디오 공유 {isVideoOn ? "종료하기" : "시작하기"}
-    //     </button>
-    //     <button onClick={handleHand}>
-    //       {isHandOn ? "손 내리기" : "손 들기"}
-    //     </button>
-    //     <button onClick={handleScreenVideo}>
-    //       화면 공유 {isScreenOn ? "종료하기" : "시작하기"}
-    //     </button>
-    //     <button onClick={exitRoom} disabled={!isInRoom}>
-    //       방 나가기
-    //     </button>
-    //     <br />
-    //     <br />
-    //     <div>나 {isHandOn ? "🤘" : ""}</div>
-    //     <video
-    //       style={{
-    //         width: 240,
-    //         height: 240,
-    //         margin: 5,
-    //         backgroundColor: "black",
-    //       }}
-    //       ref={localWebcamVideoRef}
-    //       muted
-    //       autoPlay
-    //     ></video>
-    //     <video
-    //       style={{
-    //         width: 240,
-    //         height: 240,
-    //         margin: 5,
-    //         backgroundColor: "black",
-    //         display: isScreenOn ? "inline" : "none",
-    //       }}
-    //       ref={localScreenVideoRef}
-    //       muted
-    //       autoPlay
-    //     ></video>
-    //     <br />
-    //     {newRender()}
-    //     <div>메시지</div>
-    //     <input
-    //       type="text"
-    //       value={message}
-    //       onChange={handleMessageChange}
-    //       onKeyDown={handleMessageKeyDown}
-    //       placeholder="메시지 입력"
-    //     />
-    //     {messages.map((m: any, index: number) => {
-    //       return (
-    //         <div key={index}>
-    //           {m.peer_name} : {m.peer_msg}
-    //         </div>
-    //       );
-    //     })}
-    //   </div>
-    // </>
   );
 };

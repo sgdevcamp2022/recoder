@@ -15,6 +15,23 @@ export const MeetContent = styled.div`
 
 export const VideoBox = styled.div`
   flex-grow: 1;
+  max-height: calc(100vh - 80px);
+  max-width: ${(props: { isChat: boolean }) =>
+    props.isChat ? `calc(100vw - 376px)` : `100vw`};
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+`;
+
+export const WhiteBox = styled.div`
+  background-color: white;
+  border-radius: 8px;
+  margin: 16px 16px 0 16px;
+  width: ${(props: { width: number; height: number }) => props.width}px;
+  height: ${(props: { width: number; height: number }) => props.height}px;
+  box-sizing: border-box;
 `;
 
 export const MessageBox = styled.div`
