@@ -119,7 +119,7 @@ export const MeetingButtons = () => {
     <ButtonBox>
       <HostButtonBox>
         <HostButton>
-          <Link to={data}>새 회의</Link>
+          <Link to="/test">새 회의</Link>
         </HostButton>
       </HostButtonBox>
       <JoinButtonBox>
