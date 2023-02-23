@@ -9,8 +9,9 @@ export const linkAPI = createApi({
       query: () => ({
         url: "createLink",
         method: "GET",
-        responseHandler: (response) =>
-          response.text().then((text) => text.split("/").pop()),
+        transformResponse: (response: any) => {
+          return response.link;
+        },
       }),
       providesTags: ["Link"],
     }),

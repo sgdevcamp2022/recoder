@@ -28,9 +28,10 @@ import {
   VideoBox,
 } from "../../components/Meet/MeetWrapper";
 import { Message } from "../../components/Meet/Message";
+import { useParams } from "react-router-dom";
 
 export const Test = () => {
-  const [roomId, setRoomId] = useState<string>("zzzz");
+  const { roomId } = useParams<{ roomId: string }>();
   const [peerName, setPeerName] = useState<string>(
     `user-${(Math.floor(Math.random() * 10000) + 1).toString()}`
   );
