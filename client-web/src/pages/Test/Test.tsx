@@ -584,7 +584,7 @@ export const Test = () => {
       await consume(peerId, type, id);
     }
 
-    socketRef.current = io("http://localhost:5000");
+    socketRef.current = io("https://3.36.88.215:5000");
     peer_info.peer_id = socketRef.current.id;
 
     myJoinRoom();
