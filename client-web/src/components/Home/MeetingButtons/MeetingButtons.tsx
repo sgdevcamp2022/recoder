@@ -103,7 +103,7 @@ const JoinInput = styled.input`
 
 export const MeetingButtons = () => {
   const [roomId, setRoomId] = useState<string>("");
-  const { data, isFetching, isLoading } = useGetLinkQuery({});
+  const { data } = useGetLinkQuery({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRoomId(e.target.value);
@@ -111,15 +111,20 @@ export const MeetingButtons = () => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      window.location.href = `/${roomId}`;
+      window.location.href = `/${roomId}/`;
     }
   };
 
   return (
     <ButtonBox>
       <HostButtonBox>
-        <HostButton>
-          <Link to="/test">새 회의</Link>
+        <HostButton
+          onClick={(e) => {
+            window.location.href = `/${data.link.split("/").pop()}/`;
+          }}
+        >
+          새 회의
+          {/* <Link onCto={`/${data.link.split("/").pop()}/`}>새 회의</Link> */}
         </HostButton>
       </HostButtonBox>
       <JoinButtonBox>
@@ -132,7 +137,7 @@ export const MeetingButtons = () => {
             type="text"
             placeholder="코드 또는 링크 입력"
             onChange={handleChange}
-            onKeyDown={handleKeyDown}
+            onKeyPress={handleKeyDown}
             value={roomId}
           />
         </JoinLabel>

@@ -2,15 +2,16 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const linkAPI = createApi({
   reducerPath: "linkAPI",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "https://3.36.88.215:5000/" }),
   tagTypes: ["Link"],
   endpoints: (builder) => ({
     getLink: builder.query({
       query: () => ({
         url: "createLink",
         method: "GET",
-        responseHandler: (response) =>
-          response.text().then((text) => text.split("/").pop()),
+        transformResponse: (response: any) => {
+          return response.link;
+        },
       }),
       providesTags: ["Link"],
     }),
