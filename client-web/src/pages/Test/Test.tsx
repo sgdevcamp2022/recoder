@@ -1,12 +1,39 @@
 import { io } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
 import { Device } from "mediasoup-client";
-import { Video } from "../../components/Test/Video/Video";
+import { Video } from "../../components/Meet/Video";
+import {
+  BlueButton,
+  CommonButton,
+  GrayButton,
+  InfoBox,
+  MeetBottomTab,
+  MeetBox,
+  MeetButtonBox,
+  MeetContent,
+  MessageBox,
+  MessageCloseButton,
+  MessageContentBox,
+  MessageInput,
+  MessageInputBox,
+  MessageSendButton,
+  MessageTitle,
+  MessageTitleBox,
+  OtherButtonBox,
+  RedButton,
+  RedLongButton,
+  RoomText,
+  Seperator,
+  TimeText,
+  VideoBox,
+} from "../../components/Meet/MeetWrapper";
+import { ReactComponent as svg } from "../../assets/meetings/svgexport-1.svg";
+import { Message } from "../../components/Meet/Message";
 
 export const Test = () => {
-  const [roomId, setRoomId] = useState<string>("zzz");
+  const [roomId, setRoomId] = useState<string>("zzzz");
   const [peerName, setPeerName] = useState<string>(
-    (Math.floor(Math.random() * 10000) + 1).toString()
+    `user-${(Math.floor(Math.random() * 10000) + 1).toString()}`
   );
 
   const [newUserStream, setNewUserStream] = useState<Map<any, any>>(new Map());
@@ -15,6 +42,7 @@ export const Test = () => {
   const [isScreenOn, setIsScreenOn] = useState<boolean>(false);
   const [isAudioOn, setIsAudioOn] = useState<boolean>(false);
   const [isHandOn, setIsHandOn] = useState<boolean>(false);
+  const [isMessageOn, setIsMessageOn] = useState<boolean>(false);
 
   const [isInRoom, setIsInRoom] = useState<boolean>(false);
   const [isBeforeVideo, setIsBeforeVideo] = useState<boolean>(false);
@@ -162,15 +190,8 @@ export const Test = () => {
       console.log("방 나가기 완료", response);
     });
 
-    window.location.reload();
-  };
-
-  const handleNameChange = (e: any) => {
-    setPeerName(e.target.value);
-  };
-
-  const handleRoomChange = (e: any) => {
-    setRoomId(e.target.value);
+    // root 주소로 이동
+    window.location.href = "/";
   };
 
   const handleMessageChange = (e: any) => {
@@ -179,6 +200,8 @@ export const Test = () => {
 
   const handleMessageKeyDown = (e: any) => {
     if (e.key === "Enter") {
+      e.preventDefault();
+
       socketRef.current.emit("message", {
         to_peer_id: "all",
         peer_name: peerName,
@@ -189,6 +212,18 @@ export const Test = () => {
 
       setMessage("");
     }
+  };
+
+  const handleMessageClick = (e: any) => {
+    socketRef.current.emit("message", {
+      to_peer_id: "all",
+      peer_name: peerName,
+      peer_msg: message,
+    });
+
+    setMessages([...messages, { peer_name: peerName, peer_msg: message }]);
+
+    setMessage("");
   };
 
   const updateMyInfo = (type: string, status: boolean) => {
@@ -474,12 +509,18 @@ export const Test = () => {
 
   // useEffect()는 첫 렌더링 후 1회 실행 됨.
   useEffect(() => {
+    async function myJoinRoom() {
+      await joinRoom();
+    }
+
     async function myConsume(peerId: any, type: string, id: any) {
       await consume(peerId, type, id);
     }
 
     socketRef.current = io("http://localhost:5000");
     peer_info.peer_id = socketRef.current.id;
+
+    myJoinRoom();
 
     socketRef.current.on("newMemberJoined", async (data: any) => {
       console.log("newMemberJoined", data);
@@ -611,96 +652,263 @@ export const Test = () => {
   };
 
   return (
-    <>
-      이름:{" "}
-      <input
-        type="text"
-        onChange={handleNameChange}
-        placeholder="name"
-        value={peerName}
-        disabled={isInRoom}
-      />
-      방id:{" "}
-      <input
-        type="text"
-        onChange={handleRoomChange}
-        placeholder="room"
-        value={roomId}
-        disabled={isInRoom}
-      />
-      <br />
-      <button onClick={joinRoom} disabled={isInRoom}>
-        방 입장
-      </button>
-      <button onClick={exitRoom} disabled={!isInRoom}>
-        방 나가기
-      </button>
-      <br />
-      <div style={{ display: isInRoom ? "none" : "block" }}>
-        <button onClick={beforeVideo}>
-          비디오 {isBeforeVideo ? "끄고 입장하기" : "켜고 입장하기"}
-        </button>
-        <button onClick={beforeAudio}>
-          오디오 {isBeforeAudio ? "끄고 입장하기" : "켜고 입장하기"}
-        </button>
-      </div>
-      <div style={{ display: isInRoom ? "block" : "none" }}>
-        <button onClick={handleWebcamVideo}>
-          비디오 공유 {isVideoOn ? "종료하기" : "시작하기"}
-        </button>
-        <button onClick={handleScreenVideo}>
-          화면 공유 {isScreenOn ? "종료하기" : "시작하기"}
-        </button>
-        <button onClick={handleAudio}>
-          소리 공유 {isAudioOn ? "종료하기" : "시작하기"}
-        </button>
-        <button onClick={handleHand}>
-          {isHandOn ? "손 내리기" : "손 들기"}
-        </button>
-        <br />
-        <br />
-        <div>나 {isHandOn ? "🤘" : ""}</div>
-        <video
-          style={{
-            width: 240,
-            height: 240,
-            margin: 5,
-            backgroundColor: "black",
-          }}
-          ref={localWebcamVideoRef}
-          muted
-          autoPlay
-        ></video>
-        <video
-          style={{
-            width: 240,
-            height: 240,
-            margin: 5,
-            backgroundColor: "black",
-            display: isScreenOn ? "inline" : "none",
-          }}
-          ref={localScreenVideoRef}
-          muted
-          autoPlay
-        ></video>
-        <br />
-        {newRender()}
-        <div>메시지</div>
-        <input
-          type="text"
-          value={message}
-          onChange={handleMessageChange}
-          onKeyDown={handleMessageKeyDown}
-          placeholder="메시지 입력"
-        />
-        {messages.map((m: any, index: number) => {
-          return (
-            <div key={index}>
-              {m.peer_name} : {m.peer_msg}
-            </div>
-          );
-        })}
-      </div>
-    </>
+    <MeetBox>
+      <MeetContent>
+        <VideoBox></VideoBox>
+        {isMessageOn ? (
+          <MessageBox>
+            <MessageTitleBox>
+              <MessageTitle>회의 중 메시지</MessageTitle>
+              <MessageCloseButton
+                onClick={(e) => {
+                  setIsMessageOn(false);
+                }}
+              >
+                <span className="material-icons">close</span>
+              </MessageCloseButton>
+            </MessageTitleBox>
+            <MessageContentBox>
+              {messages.map((message, index) => {
+                return (
+                  <Message
+                    key={index}
+                    peer={message.peer_name}
+                    message={message.peer_msg}
+                    myName={peerName}
+                  ></Message>
+                );
+              })}
+            </MessageContentBox>
+            <MessageInputBox>
+              <MessageInput
+                rows={1}
+                onChange={handleMessageChange}
+                onKeyDown={handleMessageKeyDown}
+                value={message}
+              ></MessageInput>
+              <MessageSendButton onClick={handleMessageClick}>
+                <span className="material-icons">send</span>
+              </MessageSendButton>
+            </MessageInputBox>
+          </MessageBox>
+        ) : (
+          <></>
+        )}
+      </MeetContent>
+      <MeetBottomTab>
+        <InfoBox>
+          <TimeText>12:47 오전</TimeText>
+          <Seperator />
+          <RoomText>wzy-jqmk-aad</RoomText>
+        </InfoBox>
+        <MeetButtonBox>
+          {isAudioOn ? (
+            <GrayButton onClick={handleAudio}>
+              <svg
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+                xmlns="http://www.w3.org/2000/svg"
+                focusable="false"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                className="Hdh4hc cIGbvc NMm5M"
+              >
+                <path
+                  d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"
+                  fill="#FFFFFF"
+                ></path>
+                <path
+                  d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"
+                  fill="#FFFFFF"
+                ></path>
+              </svg>
+            </GrayButton>
+          ) : (
+            <RedButton onClick={handleAudio}>
+              <svg
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="#000000"
+                className="Hdh4hc cIGbvc"
+              >
+                <path d="M0 0h24v24H0zm0 0h24v24H0z" fill="none"></path>
+                <path
+                  d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.54-.9L19.73 21 21 19.73 4.27 3z"
+                  fill="#FFFFFF"
+                ></path>
+              </svg>
+            </RedButton>
+          )}
+          {isVideoOn ? (
+            <GrayButton onClick={handleWebcamVideo}>
+              <svg
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+                xmlns="http://www.w3.org/2000/svg"
+                focusable="false"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                className="Hdh4hc cIGbvc NMm5M"
+              >
+                <path
+                  d="M18 10.48V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4.48l4 3.98v-11l-4 3.98zm-2-.79V18H4V6h12v3.69z"
+                  fill="#FFFFFF"
+                ></path>
+              </svg>
+            </GrayButton>
+          ) : (
+            <RedButton onClick={handleWebcamVideo}>
+              <svg
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+                xmlns="http://www.w3.org/2000/svg"
+                focusable="false"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                className="Hdh4hc cIGbvc NMm5M"
+              >
+                <path
+                  d="M18 10.48V6c0-1.1-.9-2-2-2H6.83l2 2H16v7.17l2 2v-1.65l4 3.98v-11l-4 3.98zM16 16L6 6 4 4 2.81 2.81 1.39 4.22l.85.85C2.09 5.35 2 5.66 2 6v12c0 1.1.9 2 2 2h12c.34 0 .65-.09.93-.24l2.85 2.85 1.41-1.41L18 18l-2-2zM4 18V6.83L15.17 18H4z"
+                  fill="#FFFFFF"
+                ></path>
+              </svg>
+            </RedButton>
+          )}
+          {!isHandOn ? (
+            <GrayButton onClick={handleHand}>
+              <svg
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+                xmlns="http://www.w3.org/2000/svg"
+                enableBackground="new 0 0 24 24"
+                focusable="false"
+                height="20"
+                viewBox="0 0 24 24"
+                width="20"
+                className="Hdh4hc cIGbvc NMm5M"
+              >
+                <rect fill="none" height="24" width="24"></rect>
+                <path
+                  d="M21,7c0-1.38-1.12-2.5-2.5-2.5c-0.17,0-0.34,0.02-0.5,0.05V4c0-1.38-1.12-2.5-2.5-2.5c-0.23,0-0.46,0.03-0.67,0.09 C14.46,0.66,13.56,0,12.5,0c-1.23,0-2.25,0.89-2.46,2.06C9.87,2.02,9.69,2,9.5,2C8.12,2,7,3.12,7,4.5v5.89 c-0.34-0.31-0.76-0.54-1.22-0.66L5.01,9.52c-0.83-0.23-1.7,0.09-2.19,0.83c-0.38,0.57-0.4,1.31-0.15,1.95l2.56,6.43 C6.49,21.91,9.57,24,13,24h0c4.42,0,8-3.58,8-8V7z M19,16c0,3.31-2.69,6-6,6h0c-2.61,0-4.95-1.59-5.91-4.01l-2.6-6.54l0.53,0.14 c0.46,0.12,0.83,0.46,1,0.9L7,15h2V4.5C9,4.22,9.22,4,9.5,4S10,4.22,10,4.5V12h2V2.5C12,2.22,12.22,2,12.5,2S13,2.22,13,2.5V12h2V4 c0-0.28,0.22-0.5,0.5-0.5S16,3.72,16,4v8h2V7c0-0.28,0.22-0.5,0.5-0.5S19,6.72,19,7L19,16z"
+                  fill="#FFFFFF"
+                ></path>
+              </svg>
+            </GrayButton>
+          ) : (
+            <RedButton onClick={handleHand}>
+              <svg
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+                xmlns="http://www.w3.org/2000/svg"
+                enableBackground="new 0 0 24 24"
+                focusable="false"
+                height="20"
+                viewBox="0 0 24 24"
+                width="20"
+                className="Hdh4hc cIGbvc NMm5M"
+              >
+                <rect fill="none" height="24" width="24"></rect>
+                <g fill="#FFFFFF">
+                  <path
+                    d="M12,24c-3.26,0-6.19-1.99-7.4-5.02l-3.03-7.61c-0.31-0.79,0.43-1.58,1.24-1.32l0.79,0.26c0.56,0.18,1.02,0.61,1.24,1.16 L6.25,15H7V3.25C7,2.56,7.56,2,8.25,2C8.94,2,9.5,2.56,9.5,3.25V12h1V1.25C10.5,0.56,11.06,0,11.75,0S13,0.56,13,1.25V12h1V2.75 c0-0.69,0.56-1.25,1.25-1.25s1.25,0.56,1.25,1.25V12h1V5.75c0-0.69,0.56-1.25,1.25-1.25S20,5.06,20,5.75V16 C20,20.42,16.42,24,12,24z"
+                    fill="#FFFFFF"
+                  ></path>
+                </g>
+              </svg>
+            </RedButton>
+          )}
+          {isScreenOn ? (
+            <BlueButton onClick={handleScreenVideo}>
+              <span className="material-icons">present_to_all</span>
+            </BlueButton>
+          ) : (
+            <GrayButton onClick={handleScreenVideo}>
+              <span className="material-icons">present_to_all</span>
+            </GrayButton>
+          )}
+          <RedLongButton onClick={exitRoom}>
+            <span className="material-icons">call_end</span>
+          </RedLongButton>
+        </MeetButtonBox>
+        <OtherButtonBox>
+          <CommonButton
+            onClick={(e) => {
+              setIsMessageOn(!isMessageOn);
+            }}
+          >
+            <span className="material-icons">chat</span>
+          </CommonButton>
+          <CommonButton>
+            <span className="material-icons">info</span>
+          </CommonButton>
+          <CommonButton>
+            <span className="material-icons">people_outline</span>
+          </CommonButton>
+        </OtherButtonBox>
+      </MeetBottomTab>
+    </MeetBox>
+    // <>
+    //   <div style={{ display: isInRoom ? "block" : "none" }}>
+    //     <button onClick={handleAudio}>
+    //       소리 공유 {isAudioOn ? "종료하기" : "시작하기"}
+    //     </button>
+    //     <button onClick={handleWebcamVideo}>
+    //       비디오 공유 {isVideoOn ? "종료하기" : "시작하기"}
+    //     </button>
+    //     <button onClick={handleHand}>
+    //       {isHandOn ? "손 내리기" : "손 들기"}
+    //     </button>
+    //     <button onClick={handleScreenVideo}>
+    //       화면 공유 {isScreenOn ? "종료하기" : "시작하기"}
+    //     </button>
+    //     <button onClick={exitRoom} disabled={!isInRoom}>
+    //       방 나가기
+    //     </button>
+    //     <br />
+    //     <br />
+    //     <div>나 {isHandOn ? "🤘" : ""}</div>
+    //     <video
+    //       style={{
+    //         width: 240,
+    //         height: 240,
+    //         margin: 5,
+    //         backgroundColor: "black",
+    //       }}
+    //       ref={localWebcamVideoRef}
+    //       muted
+    //       autoPlay
+    //     ></video>
+    //     <video
+    //       style={{
+    //         width: 240,
+    //         height: 240,
+    //         margin: 5,
+    //         backgroundColor: "black",
+    //         display: isScreenOn ? "inline" : "none",
+    //       }}
+    //       ref={localScreenVideoRef}
+    //       muted
+    //       autoPlay
+    //     ></video>
+    //     <br />
+    //     {newRender()}
+    //     <div>메시지</div>
+    //     <input
+    //       type="text"
+    //       value={message}
+    //       onChange={handleMessageChange}
+    //       onKeyDown={handleMessageKeyDown}
+    //       placeholder="메시지 입력"
+    //     />
+    //     {messages.map((m: any, index: number) => {
+    //       return (
+    //         <div key={index}>
+    //           {m.peer_name} : {m.peer_msg}
+    //         </div>
+    //       );
+    //     })}
+    //   </div>
+    // </>
   );
 };
